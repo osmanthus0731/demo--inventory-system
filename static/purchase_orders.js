@@ -525,6 +525,21 @@
     };
     head.append(title, remove);
     row.append(head);
+    const finder=document.createElement('label');finder.className='document-item-finder';
+    finder.append(document.createTextNode('Find item'));
+    const findInput=document.createElement('input');findInput.type='search';findInput.className='document-item-search';
+    findInput.placeholder='Search product name, UID or item code';
+    const findResults=document.createElement('span');findResults.className='document-results';
+    finder.append(findInput,findResults);row.append(finder);
+    const selectProduct=choice=>{
+      for(const field of ['description','product_id','mssid','vendor_cd','size','material'])
+        $('[data-field="'+field+'"]',row).value=choice[field]||'';
+      findInput.value=choice.description||'';
+      row.dataset.autoPrice='1';
+      for(const list of row.querySelectorAll('.document-results'))list.dispatchEvent(new Event('dismiss'));
+      prices(row);update();
+    };
+    window.bindDocumentLookup(findInput,findResults,'/purchase-orders/api/products?q=',selectProduct,{browse:true});
     const grid = document.createElement("div");
     grid.className = "po-item-grid";
     for (const [key, label, span, max] of [
@@ -556,11 +571,8 @@
         const suggestions=document.createElement('span');
         suggestions.className='document-results';
         wrapper.append(input,suggestions);
-        window.bindDocumentLookup(input,suggestions,'/purchase-orders/api/products?q=',choice=>{
-          for(const field of ['description','product_id','mssid','vendor_cd','size','material'])
-            $('[data-field="'+field+'"]',row).value=choice[field]||'';
-          prices(row);update();
-        });
+        input.placeholder='Type a product name or description';
+        window.bindDocumentLookup(input,suggestions,'/purchase-orders/api/products?q=',selectProduct);
       }
       if (["quantity", "unit_price"].includes(key)) input.inputMode = "decimal";
       if (key === "quantity")
@@ -580,6 +592,11 @@
           $(".po-prices", row).value = "";
         });
       if (key !== "description") wrapper.append(input);
+      if(key==='product_id'||key==='mssid'){
+        input.placeholder='Type a UID or item code';
+        const suggestions=document.createElement('span');suggestions.className='document-results';wrapper.append(suggestions);
+        window.bindDocumentLookup(input,suggestions,'/purchase-orders/api/products?q=',selectProduct);
+      }
       grid.append(wrapper);
     }
     const tier = document.createElement("input");

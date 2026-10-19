@@ -174,7 +174,7 @@
     }
   </style>
   {% if platform_enabled and session.get('username') %}<link rel="stylesheet" href="{{ url_for('static',filename='platform.css',v='20261015-ui3') }}">{% endif %}
-  <link rel="stylesheet" href="{{ url_for('static',filename='app-ui.css',v='20261016-sidebar-smooth') }}" media="screen">
+  <link rel="stylesheet" href="{{ url_for('static',filename='app-ui.css',v='20261019-customer-search') }}" media="screen">
   <link rel="stylesheet" href="{{ url_for('static',filename='sidebar-theme.css',v='4') }}" media="screen">
   <link rel="stylesheet" href="{{ url_for('static',filename='appearance.css',v='20261015-ui6') }}" media="screen">
   <link rel="stylesheet" href="{{ url_for('static',filename='text-layout.css',v='1') }}" media="screen">
@@ -479,7 +479,7 @@
     })();
   </script>
 
-  <script src="{{ url_for('static',filename='document_lookup.js') }}" defer></script>
+  <script src="{{ url_for('static',filename='document_lookup.js',v='20261019-customer-search') }}" defer></script>
   {% block scripts %}{% endblock %}
   {% if platform_enabled and session.get('username') %}
   {% include 'parts/stock_dialog.html' %}

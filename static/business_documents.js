@@ -8,7 +8,7 @@
     return data;
   }
   if (app) {
-    const dismissSuggestions=(target)=>{for(const list of app.querySelectorAll('.document-results'))if(!target||!list.closest('.po-item')?.contains(target))list.dispatchEvent(new Event('dismiss'));};
+    const dismissSuggestions=(target)=>{for(const list of app.querySelectorAll('.document-results'))if(!target||!(list.closest('.po-item')||list.parentElement).contains(target))list.dispatchEvent(new Event('dismiss'));};
     document.addEventListener('pointerdown',event=>dismissSuggestions(event.target));
     document.addEventListener('keydown',event=>{if(event.key==='Escape')dismissSuggestions();});
     const form = document.querySelector("#document-form"),
@@ -102,32 +102,52 @@
       if (previewUrl) URL.revokeObjectURL(previewUrl);
     });
     const partySelect=document.querySelector('#party-select'),partySearch=document.querySelector('#party-search'),partyStatus=document.querySelector('#party-status');
-    let savedParties=[];
+    let savedParties=[],partiesReady=Promise.resolve(),partiesFailed=false;
+    const partyName=form.elements.party_name;
+    const partySearchResults=document.createElement('span'),partyNameResults=document.createElement('span');
+    partySearchResults.className=partyNameResults.className='document-results customer-results';
+    partySearch.after(partySearchResults);partyName.after(partyNameResults);
+    partyName.placeholder='Type a customer name for suggestions';
+    const customerMatches=query=>{
+      const words=query.toLocaleLowerCase().trim().split(/\s+/);
+      return savedParties.filter(p=>words.every(word=>[p.customer_code,p.name,p.address,p.contact,p.details].join(' ').toLocaleLowerCase().includes(word)));
+    };
     function showParties(){
-      const query=partySearch.value.toLowerCase().trim(),chosen=form.elements.party_record_id.value;
+      const query=partySearch.value.trim(),chosen=form.elements.party_record_id.value;
       partySelect.replaceChildren(new Option('Select a customer / enter a new customer',''));
-      for(const party of savedParties.filter(p=>[p.customer_code,p.name,p.address,p.contact,p.details].join(' ').toLowerCase().includes(query)))
+      for(const party of customerMatches(query))
         partySelect.append(new Option((party.customer_code?party.customer_code+' - ':'')+party.name+(party.address?' — '+party.address.split('\n')[0]:''),party.record_id));
       partySelect.value=[...partySelect.options].some(o=>o.value===chosen)?chosen:'';
     }
     async function loadParties(){
-      try{const data=await json(await fetch('/documents/api/parties?kind='+encodeURIComponent(app.dataset.kind)));savedParties=data.rows;showParties();partyStatus.textContent=savedParties.length?'Select a saved contact to fill the fields below.':'No saved contacts yet. Enter the details below and save them for reuse.';}
-      catch(error){partySelect.replaceChildren(new Option('Enter customer details below',''));partyStatus.textContent='Could not load saved contacts. '+error.message;}
+      try{const data=await json(await fetch('/documents/api/parties?kind='+encodeURIComponent(app.dataset.kind)));savedParties=data.rows;partiesFailed=false;showParties();partyStatus.textContent=savedParties.length?'Type a customer name, code, address or contact to see suggestions.':'No saved contacts yet. Enter the details below and save them for reuse.';}
+      catch(error){partiesFailed=true;partySelect.replaceChildren(new Option('Enter customer details below',''));partyStatus.textContent='Could not load saved contacts. '+error.message;}
     }
     partySearch.oninput=showParties;
-    partySelect.onchange=()=>{
-      const party=savedParties.find(p=>p.record_id===partySelect.value);
+    const selectParty=party=>{
       form.elements.party_record_id.value=party?.record_id||'';
+      partySearchResults.dispatchEvent(new Event('dismiss'));partyNameResults.dispatchEvent(new Event('dismiss'));
       if(party){for(const key of ['name','details','address','contact','shipping_name','shipping_address','shipping_contact'])form.elements['party_'+key].value=party[key]||'';if(party.currency && /^[A-Z]{3}$/.test(party.currency)) form.elements.currency.value=party.currency;
       if(party.terms) form.elements.terms.value=party.terms;
+      partySearch.value=party.name;showParties();
       partyStatus.textContent='Customer details filled. Review billing and shipping addresses before saving.';render();}
     };
+    partySelect.onchange=()=>selectParty(savedParties.find(p=>p.record_id===partySelect.value));
+    const customerLookupOptions={
+      load:async query=>{await partiesReady;if(partiesFailed)throw Error('Customer search unavailable');return customerMatches(query).slice(0,20);},
+      label:party=>[party.customer_code,party.name,party.address?.split('\n')[0],party.contact].filter(Boolean).join(' · '),
+      emptyMessage:'No matching customers. Enter new customer details below and save them for reuse.',
+      loadingMessage:'Searching customers…',errorMessage:'Customer suggestions are unavailable. You can still enter customer details manually.'
+    };
+    window.bindDocumentLookup(partySearch,partySearchResults,'customers',selectParty,customerLookupOptions);
+    window.bindDocumentLookup(partyName,partyNameResults,'customers',selectParty,customerLookupOptions);
+    partyName.addEventListener('input',()=>{form.elements.party_record_id.value='';});
     document.querySelector('#party-save').onclick=async()=>{
       const button=document.querySelector('#party-save');button.disabled=true;
-      try{const data=await json(await fetch('/documents/api/parties',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':app.dataset.csrf},body:JSON.stringify(read().party)}));form.elements.party_record_id.value=data.record_id;partySearch.value='';await loadParties();partyStatus.textContent='Customer saved. Available for Delivery Orders and Proforma Invoices.';}
+      try{const data=await json(await fetch('/documents/api/parties',{method:'POST',headers:{'Content-Type':'application/json','X-CSRF-Token':app.dataset.csrf},body:JSON.stringify(read().party)}));form.elements.party_record_id.value=data.record_id;partySearch.value='';partiesReady=loadParties();await partiesReady;partyStatus.textContent='Customer saved. Available for Delivery Orders and Proforma Invoices.';}
       catch(error){partyStatus.textContent=error.message;}finally{button.disabled=false;}
     };
-    loadParties();
+    partiesReady=loadParties();
     function tierPrice(tiers, quantity) {
       const levels = [
           ["10K", 10000],
@@ -197,13 +217,24 @@
       const descriptionResults=document.createElement('span');
       descriptionResults.className='document-results';
       description.after(descriptionResults);
+      uid.placeholder='Type a UID or item code';
+      description.placeholder='Type a product name or description';
+      const finder=document.createElement('label');finder.className='document-item-finder';
+      finder.append(document.createTextNode('Find item'));
+      const findInput=document.createElement('input');findInput.type='search';findInput.className='document-item-search';
+      findInput.placeholder='Search product name, UID or item code';
+      const findResults=document.createElement('span');findResults.className='document-results';
+      finder.append(findInput,findResults);row.prepend(finder);
       const selectProduct=choice=>{
         uid.value=choice.uid;description.value=choice.description;tiers=null;
-        results.hidden=true;descriptionResults.hidden=true;
+        findInput.value=choice.description;
+        for(const list of row.querySelectorAll('.document-results'))list.dispatchEvent(new Event('dismiss'));
         applyPrice();
       };
+      window.bindDocumentLookup(findInput,findResults,'/documents/api/products?q=',selectProduct,{browse:true});
       window.bindDocumentLookup(uid,results,'/documents/api/products?q=',selectProduct);
       window.bindDocumentLookup(description,descriptionResults,'/documents/api/products?q=',selectProduct);
+      uid.addEventListener('input',()=>{tiers=null;priceRequest=null;priceGeneration++;});
       qty.addEventListener("input", applyPrice);
       items.append(row);
       if (uid.value && (Number(price.value) || 0) === 0) applyPrice();

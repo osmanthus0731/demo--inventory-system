@@ -17,3 +17,6 @@ htmlcov/
 .vercel/
 Thumbs.db
 .DS_Store
+
+.vercel
+.env*

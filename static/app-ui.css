@@ -257,3 +257,4 @@ html[data-theme="dark"] .app-shell .overview-metrics a,html[data-theme="dark"] .
 .app-shell .document-payment-card small{color:var(--muted,#687485);line-height:1.5}
 .document-results [aria-selected="true"]{background:#edf3fc;outline:2px solid #768d6c;outline-offset:-2px}
 @media(prefers-reduced-motion:reduce){.app-shell .sidebar,.app-shell .page{transition:none!important}}
+.document-item-finder{display:grid;gap:8px;min-width:0;padding:14px;margin-bottom:14px;border:1px solid var(--line,#dce2d3);border-radius:10px;background:var(--canvas,#f6f7f9)}.document-item-finder input{width:100%;box-sizing:border-box}.document-item-finder .document-browse{justify-self:start}.document-lookup-status{display:block;padding:10px;font-size:12px;line-height:1.5;color:var(--muted,#687485)}

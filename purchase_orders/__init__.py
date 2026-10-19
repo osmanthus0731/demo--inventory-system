@@ -330,12 +330,10 @@ def init_app(app, database, products, pricing):
     @bp.get("/api/products")
     def search_products():
         search = request.args.get("q", "").strip()[:120]
-        if not search:
-            return jsonify([])
         fields = ("uid", "Part_id", "name", "Desc", "readable_id", "Mssid", "size", "Size", "material", "Material", "Matl")
         tokens=re.findall(r'[A-Za-z0-9]+',search)
         query={"$and":[{"$or":[{field:re.compile(re.escape(token),re.I)} for field in fields[:6]]} for token in tokens]} if tokens else {}
-        docs = products.find(query, {k: 1 for k in fields}).limit(20)
+        docs = products.find(query, {k: 1 for k in fields}).sort('name',1).limit(20)
         return jsonify([product_snapshot(d) for d in docs])
 
     @bp.get("/api/prices")

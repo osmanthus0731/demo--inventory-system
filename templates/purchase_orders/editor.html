@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}{{ 'Edit' if po.number else 'Create' }} Purchase Order — Meadow{% endblock %}
 {% block content %}
-<link rel="stylesheet" href="{{ url_for('static', filename='purchase_orders.css',v='20261016-supplier-combo') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='purchase_orders.css',v='20261019-item-search') }}">
 <link rel="stylesheet" href="{{ url_for('static', filename='purchase_order_print.css') }}">
 <section class="po-app" data-page="editor" data-csrf="{{ csrf }}">
   <div class="po-toolbar"><div><h1>{{ 'Edit' if po.number else 'Create' }} Purchase Order</h1><p class="muted">Save a draft, review the document, then finalise it.</p></div><a class="btn po-secondary po-back" href="{{ url_for('purchase_orders.dashboard') }}">← All purchase orders</a><span class="po-badge {{ po.status }}">{{ po.status|capitalize }}</span></div>
@@ -42,4 +42,4 @@
 </section>
 <script id="po-data" type="application/json">{{ po|tojson }}</script>
 {% endblock %}
-{% block scripts %}<script src="{{ url_for('static', filename='purchase_orders.js',v='20261016-supplier-combo') }}" defer></script>{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='purchase_orders.js',v='20261019-item-search') }}" defer></script>{% endblock %}

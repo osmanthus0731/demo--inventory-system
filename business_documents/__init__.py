@@ -404,10 +404,9 @@ def init_app(app,db,products):
     @bp.get('/api/products')
     def search_products():
         search=request.args.get('q','').strip()[:120]
-        if not search:return jsonify([])
         tokens=re.findall(r'[A-Za-z0-9]+',search);fields=('uid','Part_id','name','Desc','readable_id','Mssid')
         query={'$and':[{'$or':[{field:re.compile(re.escape(token),re.I)} for field in fields]} for token in tokens]} if tokens else {}
-        rows=products.find(query,{field:1 for field in fields}).limit(20)
+        rows=products.find(query,{field:1 for field in fields}).sort('name',1).limit(20)
         return jsonify([{'uid':str(row.get('uid') or row.get('Part_id') or ''),'description':str(row.get('name') or row.get('Desc') or '')} for row in rows])
 
     @bp.get('/api/parties')
