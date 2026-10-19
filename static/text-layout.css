@@ -1,0 +1,37 @@
+﻿/* Larger text stays readable: rows grow and labels wrap instead of clipping. */
+@media screen {
+  .app-shell :is(.brand-label,.sb-label,.user-name,.person-name,.mover-name strong,.performance-title strong){white-space:normal;overflow:visible;text-overflow:clip;overflow-wrap:anywhere;min-width:0;max-width:100%;line-height:1.45}
+  .app-shell :is(.btn,.platform-primary,.chip,.badge,.pill,.forecast-action,.analytics-status,.po-back){white-space:normal;overflow-wrap:anywhere;max-width:100%;height:auto;text-align:center}
+  .app-shell :is(h1,h2,h3,h4,p,label,small,.map-product a,.map-product strong,.map-product small,.product-name,.product-category){overflow-wrap:anywhere}
+  .app-shell :is(.sb-header,.sb-userbtn,.person,.platform-heading,.page-heading,.section-heading,.po-toolbar){min-width:0;height:auto}
+  .app-shell :is(.sb-header,.sb-userbtn) > :is(.m-handle,.user-ava,.chev){flex-shrink:0}
+  .app-shell :is(.platform-heading,.page-heading,.section-heading,.po-toolbar){flex-wrap:wrap;row-gap:12px}
+  .app-shell :is(.platform-heading,.page-heading,.section-heading,.po-toolbar)>div{min-width:0;max-width:100%}
+  .app-shell .full-select-value{display:block;white-space:normal;overflow-wrap:anywhere;line-height:1.5;min-width:0;max-width:100%;flex-basis:100%;color:var(--muted,#657080);font-size:12px}
+  .app-shell .full-select-value[hidden]{display:none}
+  html[data-text-size="large"] .app-shell :is(th,td,.live-status,.person-right,.quantity,.forecast-count,.forecast-intro strong){white-space:normal;overflow-wrap:anywhere;line-height:1.5}
+  html[data-text-size="large"] .app-shell .performance-card{grid-template-columns:34px minmax(0,1fr);height:auto;align-items:start}
+  html[data-text-size="large"] .app-shell .performance-stat{grid-column:auto;min-width:0}
+  html[data-text-size="large"] .app-shell .performance-end{grid-column:1/-1;justify-items:start;text-align:left}
+  html[data-text-size="large"] .app-shell .mover-list li{grid-template-columns:27px minmax(0,1fr);align-items:start}
+  html[data-text-size="large"] .app-shell .mover-value{grid-column:2;text-align:left}
+  html[data-text-size="large"] .app-shell .text-action{position:static;display:block;margin-bottom:8px;max-width:100%;white-space:normal}
+  html[data-text-size="large"] .app-shell :is(.analytics-action-grid>.card>h2,.mover-columns section>h3){padding-right:0}
+  html[data-text-size="large"] .app-shell .forecast-intro{flex-wrap:wrap}
+  html[data-text-size="large"] .app-shell .person{flex-wrap:wrap;gap:8px}
+  html[data-text-size="large"] .app-shell .person-right{margin-left:0}
+  html[data-text-size="large"] .app-shell .filter-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr))}
+  html[data-text-size="large"] .app-shell :is(.walk-heading,.walk-directory,.walk-phone-hint){flex-wrap:wrap;gap:10px}
+  html[data-text-size="large"] .app-shell :is(.walk-heading h2,.walk-popup-heading h2){min-width:0;flex:1;line-height:1.4}
+  html[data-text-size="large"] .app-shell :is(#walk-popup-close,#walk-close){flex-shrink:0}
+  html[data-text-size="large"] .app-shell .walk-heading .btn{white-space:normal}
+  html[data-text-size="large"] .app-shell #walk-selection{max-height:none;overflow:visible;flex-shrink:0}
+  html[data-text-size="large"] .app-shell #walk-hud{max-width:57%;white-space:normal;overflow-wrap:anywhere;line-height:1.45}
+  .app-shell #walk-hover-rack{max-width:calc(100% - 28px);white-space:normal;overflow-wrap:anywhere;text-align:center;line-height:1.45}
+}
+@media screen and (max-width:950px),screen and (pointer:coarse){
+  .app-shell .walk-touch{width:calc(100% - 24px)}
+  .app-shell .walk-touch #walk-jump{position:absolute;right:0;bottom:0;width:64px;height:64px;font-size:12px;white-space:normal}
+  .app-shell .walk-touch [data-walk-key="shift"]{position:absolute;right:74px;bottom:0;width:64px;height:64px}
+  html[data-text-size="large"] .app-shell #walk-selection{max-height:min(22dvh,180px);overflow:auto;line-height:1.5}
+}

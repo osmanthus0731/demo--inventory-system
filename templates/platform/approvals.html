@@ -1,0 +1,4 @@
+<div class="card"><p>Stock stays unchanged until a different Admin approves the request. If stock changes while a request is waiting, submit a fresh request.</p></div>
+<form id="approval-filter" class="card platform-toolbar"><label>Status<select name="status"><option value="pending">Awaiting review</option><option value="">All requests</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="stale">Stock changed</option><option value="cancelled">Cancelled</option></select></label><button class="btn">Apply</button></form>
+<div id="approval-list" aria-live="polite"><p class="muted">Loading requests…</p></div>
+<div class="platform-toolbar"><button class="btn platform-secondary" id="approval-prev">Previous</button><span id="approval-count"></span><button class="btn platform-secondary" id="approval-next">Next</button></div>

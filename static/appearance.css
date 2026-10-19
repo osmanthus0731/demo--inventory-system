@@ -1,0 +1,18 @@
+.analytics-popup-chart{display:block;width:100%;height:250px;max-width:100%}
+.flow-sections{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.flow-total{display:flex;justify-content:space-between;align-items:center;padding:16px;margin-bottom:10px;border-radius:10px;background:#edf3fc;color:#315fba}
+.flow-sections>section:nth-child(2) .flow-total{background:#e7f6f4;color:#168781}
+.flow-total strong{font-size:20px}.flow-sections th:last-child,.flow-sections td:last-child{text-align:right}
+@media(max-width:800px){.flow-sections{grid-template-columns:1fr}}
+html[data-theme=dark]{--card-bg:#22262e;--muted:#b4bdcc;--ink:#edf0f5;--line:#424b59;color-scheme:dark}
+html[data-theme=dark] .app-shell :is(.filter-bar,.metric,.intelligence-dialog,.po-save,.topbar,.create-menu>div,.performance-card,.mover-list li,.stock-quantities label,.stock-footer,#stock-review,#stock-dialog,.po-layout-options,.document-results,.document-results button,.account-panel,.loc,.meta .box){background:#22262e;color:var(--ink);border-color:var(--line)}
+html[data-theme=dark] .app-shell :is(.btn-secondary,.btn-ghost,.platform-secondary,.po-secondary){background:#303744!important;color:#edf0f5!important;border-color:#515c6e!important}
+html[data-theme=dark] .app-shell :is(label,.muted,.mini,.chart-help,.chart-legend,.live-status,.product-category,.meta .k,.performance-stat span,.performance-title span,.mover-name small,.mover-value small,.forecast-table td small){color:var(--muted)}
+html[data-theme=dark] .app-shell :is(a,.product-name,.quantity,.chip strong,.metric strong,.mover-value strong){color:#d5dcfb}
+html[data-theme=dark] .app-shell :is(.chip,.badge,.pill,.stock-close,.forecast-intro,.flow-total,.analytics-status,.mover-rank,.performance-rank){background:#303d53;color:#d7e7ff;border-color:#465772}
+html[data-theme=dark] .app-shell :is(.analytics-status.out,.forecast-action.urgent,.flash.error,.po-error,#platform-message.error){background:#492c33;color:#ffbbc2;border-color:#77424b}
+html[data-theme=dark] .app-shell :is(.analytics-status.low,.forecast-action.soon){background:#483e27;color:#f4d486}
+html[data-theme=dark] .app-shell :is(.analytics-status.healthy,.forecast-action.healthy,.flow-sections>section:nth-child(2) .flow-total){background:#24433e;color:#a4e3d1}
+html[data-theme=dark] .app-shell :is(.forecast-action.collecting,.product-suggestion:hover,.create-menu a:hover,.document-results button:hover,.mover-list li:hover,.performance-card:hover){background:#343d4d;color:#edf0f5}
+html[data-theme=dark] .app-shell :is(.create-menu a,.document-results button,.product-suggestion){color:var(--ink)}
+.app-shell .document-results{position:static;display:grid;width:100%;max-height:190px;overflow-y:auto;margin:6px 0 10px;padding:5px;border:1px solid var(--line);border-radius:8px;box-shadow:0 3px 12px #17233b0c;background:var(--card-bg,#fff)}.app-shell .document-results[hidden]{display:none}.app-shell .document-results button{display:block;width:100%;text-align:left;white-space:normal;padding:9px 10px;line-height:1.45;font:inherit;border:0;border-radius:5px;color:var(--ink);background:transparent}.app-shell .document-results button:hover{background:#edf3fc}.app-shell .product-suggestions{max-height:190px}.map-stage .rack-pin.selected path,.map-stage .rack-pin.matching path{fill:var(--pin-fill)}.map-stage .rack-pin.selected path{stroke:#8464c5;stroke-width:4}.map-stage .rack-pin.matching path{stroke:#148c88;stroke-width:4}

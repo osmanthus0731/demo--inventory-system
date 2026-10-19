@@ -1,0 +1,10 @@
+<section class="account-brand">
+  <span class="garden-eyebrow">A LITTLE ROOM TO GROW</span>
+  {% set flower = appearance.flower_style if appearance is defined and appearance.flower_style else 'cosmos' %}
+  {% macro blossom() %}<svg viewBox="0 0 100 100" focusable="false"><use href="{{ url_for('static',filename='garden-flowers.svg') }}#{{ flower }}"></use></svg>{% endmacro %}
+  <h1><span class="meadow-wordmark">Meadow</span><br>Inventory <span class="brand-title-flower brand-flower-art" aria-hidden="true">{{ blossom() }}</span></h1>
+  <p>{{ 'A little pause, at your own pace.' if logout_user is defined else 'A fresh start, at your own pace.' }}<br>{{ 'Your garden will be here when you return.' if logout_user is defined else 'Select your account and settle in.' }}</p>
+  {% if demo_mode %}<p>Local demo · fictional data · resets on restart</p>{% endif %}
+  <div class="brand-floating-flowers" aria-hidden="true"><span class="brand-flower-art">{{ blossom() }}</span><span class="brand-flower-art">{{ blossom() }}</span><span class="brand-flower-art">{{ blossom() }}</span></div>
+  <span class="brand-footnote">Your space. Your pace.</span>
+</section>

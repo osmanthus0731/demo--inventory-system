@@ -1,0 +1,76 @@
+{% extends "index.html" %}
+{% block title %}Search{% endblock %}
+
+{% block content %}
+
+
+<div class="page-heading"><div><span class="eyebrow">Inventory workspace</span><h1>Search</h1><p>Find products by name, UID or MSSID.</p></div></div>
+
+{# ✅ keep selected values after submit (works for POST + GET) #}
+{% set selected_category = request.values.get('filter_category', 'All') %}
+{% set selected_volume   = request.values.get('volume', '') %}
+{% set selected_location = request.values.get('location', '') %}
+{% set selected_sort     = request.values.get('sort', sort_by|default('name_asc')) %}
+{% set selected_query    = request.values.get('search_uid', request.args.get('q','')) %}
+
+<form method="post" class="filter-bar">
+
+  <label class="filter-search product-autocomplete">Product search<input name="search_uid"
+         placeholder="Start typing a product name, UID or MSSID…"
+         value="{{ selected_query }}" autocomplete="off" role="combobox"
+         aria-autocomplete="list" aria-expanded="false" aria-controls="product-suggestions"/>
+         <span class="product-suggestions" id="product-suggestions" role="listbox" hidden></span></label>
+
+  <label>Category
+  <select name="filter_category">
+    <option value="All" {% if selected_category == 'All' %}selected{% endif %}>All</option>
+    {% for c in categories %}
+      {% if c != 'All' %}
+        <option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>{{ c }}</option>
+      {% endif %}
+    {% endfor %}
+  </select></label>
+
+  <!-- 🔒 VOLUME UNCHANGED -->
+  <label>Volume
+  <select name="volume">
+    <option value="" {% if selected_volume == '' %}selected{% endif %}>Any</option>
+    {% for v in volumes %}
+      <option value="{{ v }}" {% if selected_volume == (v|string) %}selected{% endif %}>{{ v }} ml</option>
+    {% endfor %}
+  </select></label>
+
+  <!-- ✅ LOCATION: Any + all options -->
+  <label>Location
+  <select name="location">
+    <option value="" {% if selected_location == '' %}selected{% endif %}>Any</option>
+    {% for loc in locations_list %}
+      <option value="{{ loc }}" {% if selected_location == loc %}selected{% endif %}>{{ loc }}</option>
+    {% endfor %}
+  </select></label>
+
+  <!-- ✅ SORT -->
+  <label>Sort
+  <select name="sort">
+    <option value="name_asc"  {% if selected_sort == 'name_asc' %}selected{% endif %}>Name (A–Z)</option>
+    <option value="name_desc" {% if selected_sort == 'name_desc' %}selected{% endif %}>Name (Z–A)</option>
+
+    <option value="uid_asc"   {% if selected_sort == 'uid_asc' %}selected{% endif %}>UID (A–Z)</option>
+    <option value="uid_desc"  {% if selected_sort == 'uid_desc' %}selected{% endif %}>UID (Z–A)</option>
+
+    <option value="volume_asc"  {% if selected_sort == 'volume_asc' %}selected{% endif %}>Volume (Low → High)</option>
+    <option value="volume_desc" {% if selected_sort == 'volume_desc' %}selected{% endif %}>Volume (High → Low)</option>
+
+    <option value="stock_asc"  {% if selected_sort == 'stock_asc' %}selected{% endif %}>Stock (Low → High)</option>
+    <option value="stock_desc" {% if selected_sort == 'stock_desc' %}selected{% endif %}>Stock (High → Low)</option>
+  </select></label>
+
+  <div class="filter-actions"><button class="btn" type="submit">Search</button><a class="btn btn-secondary" href="{{ url_for(request.endpoint) }}">Reset</a></div>
+</form>
+
+{% if message %}
+  <div class="flash info">{{ message }}</div>
+{% endif %}
+
+{% set inventory_rows = result or [] %}{% include 'parts/inventory_table.html' %}
+{% endblock %}

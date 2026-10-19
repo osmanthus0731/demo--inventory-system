@@ -1,0 +1,21 @@
+<dialog id="stock-dialog" aria-labelledby="stock-title" data-csrf="{{ platform_csrf }}">
+  <form id="stock-form">
+    <header class="stock-header"><div><h2 id="stock-title">Edit Stock</h2><p id="stock-product">Loading product…</p></div><button class="stock-close" type="button" data-dialog-close aria-label="Close">×</button></header>
+    <div class="stock-body">
+      <div id="stock-message" role="status" aria-live="polite"></div>
+      <input type="hidden" name="uid"><input type="hidden" name="revision"><input type="hidden" name="event_id">
+      <fieldset class="stock-modes"><legend>How would you like to update stock?</legend><label><input type="radio" name="mode" value="set" checked> Set quantities</label><label><input type="radio" name="mode" value="adjust"> Add or subtract</label></fieldset>
+      <div class="stock-quantities">
+        <label id="stock-a-field"><span id="stock-a-label">Location A</span><input class="stock-location-name" type="text" name="location_a" placeholder="Location name" maxlength="10" hidden disabled><input type="number" name="a" step="1" required><small>Location quantity</small></label>
+        <label id="stock-b-field"><span id="stock-b-label">Location B</span><input class="stock-location-name" type="text" name="location_b" placeholder="Location name" maxlength="10" hidden disabled><input type="number" name="b" step="1" required><small>Location quantity</small></label>
+        <label><span>Office stock</span><input type="number" name="total" step="1" required><small>Independent of location quantities</small></label>
+      </div>
+      <button class="stock-add-location" id="stock-add-location" type="button" hidden><span aria-hidden="true">+</span> Add location</button>
+      <div class="stock-details"><label>Reason<select name="reason" required><option value="">Choose a reason</option><option value="issued">Stock sold</option><option value="received">Stock received</option><option value="correction">Correction</option><option value="other">Other</option></select></label><label>Reference <span class="sr-only">number</span><input name="reference" placeholder="Optional, e.g. invoice number" maxlength="120"></label></div>
+      <label class="stock-note">Note <textarea name="note" placeholder="Add context for your team (optional)" maxlength="1000" rows="2"></textarea></label>
+      <section id="stock-review"><strong>Review changes</strong><div id="stock-review-lines"></div><p>Load a product to review before and after values.</p></section>
+      <div id="stock-meta"></div>
+    </div>
+    <footer class="stock-footer"><small>Another Admin must approve before quantities change or sync to Access.</small><div><button class="btn btn-secondary" type="button" data-dialog-close>Cancel</button><button class="btn" id="stock-save" type="submit" disabled>Submit request</button></div></footer>
+  </form>
+</dialog>

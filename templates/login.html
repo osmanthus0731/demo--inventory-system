@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Meadow Inventory</title>
+  <link rel="stylesheet" href="{{ url_for('static',filename='brand.css',v='1') }}">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: url("{{ url_for('static', filename='login-bg.jpg') }}") no-repeat center center fixed;
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-wrapper {
+      display: flex;
+      width: 900px;
+      height: 500px;
+      background: white;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    .left-panel {
+      flex: 1;
+      background: url("{{ url_for('static', filename='leftpanel.png') }}") no-repeat center center;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+    .left-panel::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.35);
+      z-index: 0;
+    }
+    .left-panel h1, .left-panel p { position: relative; z-index: 1; }
+    .left-panel h1 { font-size: 32px; margin-bottom: 15px; }
+    .left-panel p  { font-size: 16px; max-width: 300px; opacity: 0.9; }
+
+    .right-panel {
+      flex: 1;
+      background: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 40px;
+    }
+    .right-panel h2 { text-align: center; margin-bottom: 25px; color: #333; }
+
+    input[type="text"], input[type="password"] {
+      width: 100%; padding: 12px 15px; margin-bottom: 20px;
+      border: 1px solid #ccc; border-radius: 8px; font-size: 16px;
+      transition: border 0.2s, box-shadow 0.2s; box-sizing: border-box;
+    }
+    input:focus { border-color: #8e2de2; box-shadow: 0 0 0 3px rgba(142,45,226,.25); outline: none; }
+
+    .password-wrap { position: relative; display: flex; align-items: center; }
+    .toggle {
+      position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; color: #8e2de2; cursor: pointer; font-size: 13px; padding: 0;
+    }
+
+    button[type="submit"]{
+      width: 100%; padding: 12px;
+      background: linear-gradient(135deg, #6a11cb, #8e2de2);
+      color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;
+      transition: transform .1s ease-in-out;
+    }
+    button[type="submit"]:hover{ transform: translateY(-1px); }
+
+    .flash-error{background:#f8d7da;color:#721c24;border:1px solid #f5c6cb;padding:10px;border-radius:6px;margin-bottom:15px;text-align:center;font-size:14px}
+    .flash-success{background:#d4edda;color:#155724;border:1px solid #c3e6cb;padding:10px;border-radius:6px;margin-bottom:15px;text-align:center;font-size:14px}
+  </style>
+<link rel="stylesheet" href="{{ url_for('static',filename='i18n.css',v='1') }}"></head>
+<body>
+
+<div class="login-wrapper">
+  <!-- Left -->
+  <div class="left-panel">
+    <h1>Welcome to <span class="meadow-wordmark">Meadow</span>!</h1>
+    <p>Login With <span class="meadow-wordmark">Meadow</span> Account.</p>
+  </div>
+
+  <!-- Right -->
+  <div class="right-panel">
+    <h2>Sign In</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          {% if category == 'error' %}
+            <div class="flash-error">{{ message }}</div>
+          {% elif category == 'success' %}
+            <div class="flash-success">{{ message }}</div>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('login') }}" id="loginForm">
+      <input type="text" name="username" placeholder="Username" required>
+      <div class="password-wrap">
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        <button class="toggle" type="button" onclick="togglePw()">Show</button>
+      </div>
+      <button type="submit">Login</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function togglePw(){
+    const pw = document.getElementById('password');
+    const btn = document.querySelector('.toggle');
+    const isPwd = pw.type === 'password';
+    pw.type = isPwd ? 'text' : 'password';
+    btn.textContent = isPwd ? 'Hide' : 'Show';
+  }
+  document.getElementById('loginForm').addEventListener('submit', function(){
+    const btn = this.querySelector('button[type="submit"]');
+    btn.disabled = true; btn.textContent = 'Logging in...';
+  });
+</script>
+
+<script src="{{ url_for('static',filename='i18n.js',v='1') }}" defer></script></body>
+</html>

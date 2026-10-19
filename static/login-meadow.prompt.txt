@@ -1,0 +1,3 @@
+Generated with the built-in image generation tool, using the supplied flower-field image as a visual reference.
+
+Prompt: Use case: stylized-concept. Create a wide 16:9 website login background inspired closely by the FIRST attached reference image (flower field, not the second UI screenshot): low viewpoint among abundant pale lavender blue and white five-petalled flowers and green grass, two weathered broken warm terracotta stone walls in the middle distance, glowing peach and golden yellow sunset sky, a few drifting petals. Dreamy hand-painted anime background, tranquil, soft natural light, detailed foreground flowers, no people, no text, no watermark. Full bleed landscape artwork only, no UI. Preserve the reference's composition and relaxed mood.

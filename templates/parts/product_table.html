@@ -1,0 +1,7 @@
+{% set inventory_rows = products %}{% include 'parts/inventory_table.html' %}
+{% if total_pages > 1 %}
+<nav aria-label="Product pages" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+  {% for p in pages %}<a class="btn" href="{{ url_for('index', page=p, filter_category=selected_category, volume=selected_volume, location=location) }}" {% if p == page %}aria-current="page"{% endif %}>{{ p }}</a>{% endfor %}
+  <span>Page {{ page }} of {{ total_pages }}</span>
+</nav>
+{% endif %}

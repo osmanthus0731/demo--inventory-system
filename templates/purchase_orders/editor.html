@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Edit' if po.number else 'Create' }} Purchase Order — Meadow{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='purchase_orders.css',v='20261016-supplier-combo') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='purchase_order_print.css') }}">
+<section class="po-app" data-page="editor" data-csrf="{{ csrf }}">
+  <div class="po-toolbar"><div><h1>{{ 'Edit' if po.number else 'Create' }} Purchase Order</h1><p class="muted">Save a draft, review the document, then finalise it.</p></div><a class="btn po-secondary po-back" href="{{ url_for('purchase_orders.dashboard') }}">← All purchase orders</a><span class="po-badge {{ po.status }}">{{ po.status|capitalize }}</span></div>
+  {% if po.number %}<p class="muted">Saving changes keeps this record's {{ po.status }} status.</p>{% endif %}
+  <p id="po-message" role="status" aria-live="polite"></p>
+  <form id="po-editor">
+    <div class="card po-fields">
+      <div class="po-wide po-layout-picker"><div class="po-layout-label"><span>Purchase order format</span><small>Choose the layout for this order.</small></div><input type="hidden" name="layout_type" value="{{ po.layout_type or 'normal' }}"><div class="po-layout-options" role="group" aria-label="Purchase order format"><button type="button" class="btn" data-layout="normal">Normal</button><button type="button" class="btn po-secondary" data-layout="chinese_supplier">Chinese Supplier</button></div></div>
+      <div class="po-wide po-supplier-field"><label for="po-supplier-search">Find supplier</label><div class="po-supplier-combo" id="po-supplier-combo"><div class="po-supplier-input"><input type="text" id="po-supplier-search" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="po-supplier-options" aria-describedby="po-supplier-status" placeholder="Search or select supplier" autocomplete="off"><button type="button" id="po-supplier-toggle" aria-label="Show all suppliers" aria-controls="po-supplier-options">?</button></div><div id="po-supplier-options" role="listbox" aria-label="Suppliers" hidden></div></div><small id="po-supplier-status" role="status"></small></div>
+      <input type="hidden" name="supplier.record_id" value="{{ po.supplier.record_id or '' }}">
+      <label class="po-wide">Supplier name<input name="supplier.name" required maxlength="160" value="{{ po.supplier.name or '' }}"></label>
+      <label class="po-wide">Supplier address / supplementary details<textarea name="supplier.details" rows="3" maxlength="600">{{ po.supplier.details or '' }}</textarea></label>
+      <label class="po-wide po-chinese-field">Shipping address / 收货地址<textarea name="supplier.shipping_address" rows="3" maxlength="600">{{ po.supplier.shipping_address or '' }}</textarea></label>
+      <label class="po-wide po-chinese-field">Supplier bank details / 银行资料<textarea name="supplier.bank_details" rows="2" maxlength="600">{{ po.supplier.bank_details or '' }}</textarea></label>
+      <label>Attn.<input name="supplier.attention" maxlength="100" value="{{ po.supplier.attention or '' }}"></label>
+      <label>Fax<input name="supplier.fax" maxlength="50" value="{{ po.supplier.fax or '' }}"></label>
+      <label>Order date<input type="date" name="date" required value="{{ po.date }}"></label>
+      <label>Delivery date<input type="date" name="delivery_date" value="{{ po.delivery_date or '' }}"></label>
+      <label>Terms<input name="terms" maxlength="100" value="{{ po.terms or '' }}"></label>
+      <label>Replacement<input name="replacement" maxlength="80" value="{{ po.replacement or '' }}"></label>
+      <label>Currency<select name="currency">{% for c in currencies %}<option {{ 'selected' if c == po.currency }}>{{ c }}</option>{% endfor %}</select></label>
+      <label class="po-chinese-field">Transport fees<input name="transport_fees" inputmode="decimal" value="{{ po.transport_fees or '0' }}"></label>
+      <label class="po-chinese-field">GST %<input name="gst_percent" inputmode="decimal" value="{{ po.gst_percent or '0' }}"></label>
+      <label>{{ 'PO number' if automatic_numbering else 'Legacy PO number (optional)' }}<input name="legacy_number" maxlength="50" value="{{ po.legacy_number or '' }}" {% if automatic_numbering %}readonly placeholder="Assigned when finalised"{% endif %}><small>{{ 'Assigned from Access only when finalised. Numbers are never reused.' if automatic_numbering else 'Enter an existing system number only when known.' }}</small></label>
+    </div>
+    <div class="po-toolbar"><h2>Items</h2><button type="button" class="btn po-secondary" id="po-add">Add manual item</button></div>
+    <div class="card"><label>Find inventory<input id="po-search" type="search" placeholder="Search by UID, name or Mssid" autocomplete="off" maxlength="120"></label><p id="po-search-status" class="muted" role="status"></p><div id="po-results" class="po-results"></div></div>
+    <div id="po-items"></div>
+    <div class="card po-toolbar">
+      <label>Discount type<select name="discount_type"><option value="amount" {{ 'selected' if po.discount_type == 'amount' }}>Amount</option><option value="percent" {{ 'selected' if po.discount_type == 'percent' }}>Percentage</option></select></label>
+      <label>Discount<input name="discount_value" inputmode="decimal" required value="{{ po.discount_value }}"></label>
+      <div class="po-totals"><div>Subtotal <output id="po-subtotal">0.00</output></div><div>Discount <output id="po-discount">0.00</output></div><strong>Total <output id="po-total">0.00</output></strong></div>
+    </div>
+    <div class="po-toolbar po-save"><button class="btn" id="po-save">{{ 'Save changes' if po.number else 'Save draft' }}</button><span id="po-save-state" class="muted">{{ po.number or 'A local reference is assigned on save.' }}</span><a class="btn po-secondary" href="{{ url_for('purchase_orders.dashboard') }}">Cancel</a></div>
+  </form>
+  <div class="po-toolbar"><h2>Live A4 preview</h2><span id="po-preview-status" role="status">Complete supplier and item details to preview.</span></div>
+  <div id="po-preview" class="po-preview"></div>
+</section>
+<script id="po-data" type="application/json">{{ po|tojson }}</script>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static', filename='purchase_orders.js',v='20261016-supplier-combo') }}" defer></script>{% endblock %}

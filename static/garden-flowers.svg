@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <symbol id="cosmos" viewBox="0 0 100 100">
+    <g fill="currentColor" stroke="currentColor" stroke-width=".5">
+      <path d="M49 52C33 43 24 22 35 12Q40 8 45 14Q50 6 55 13Q64 9 67 18C71 32 60 46 49 52Z"/>
+      <path d="M49 52C33 43 24 22 35 12Q40 8 45 14Q50 6 55 13Q64 9 67 18C71 32 60 46 49 52Z" transform="rotate(72 50 50)" opacity=".86"/>
+      <path d="M49 52C33 43 24 22 35 12Q40 8 45 14Q50 6 55 13Q64 9 67 18C71 32 60 46 49 52Z" transform="rotate(144 50 50)"/>
+      <path d="M49 52C33 43 24 22 35 12Q40 8 45 14Q50 6 55 13Q64 9 67 18C71 32 60 46 49 52Z" transform="rotate(216 50 50)" opacity=".8"/>
+      <path d="M49 52C33 43 24 22 35 12Q40 8 45 14Q50 6 55 13Q64 9 67 18C71 32 60 46 49 52Z" transform="rotate(288 50 50)" opacity=".92"/>
+    </g><g fill="none" stroke="#fff" opacity=".32" stroke-width="1.4"><path d="M50 46L45 20M55 48L77 35M54 55L69 77M47 56L30 77M44 49L20 40"/></g><circle cx="50" cy="51" r="9" fill="#e7bb69"/><g fill="#fff4c9"><circle cx="47" cy="48" r="2"/><circle cx="54" cy="48" r="2"/><circle cx="50" cy="54" r="2"/></g>
+  </symbol>
+  <symbol id="freesia" viewBox="0 0 100 100">
+    <path d="M30 94Q38 62 47 39Q55 19 76 10" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".65"/>
+    <path d="M32 88Q9 70 16 52Q34 62 36 78M38 72Q60 62 62 45Q43 51 38 72" fill="currentColor" opacity=".35"/>
+    <g fill="currentColor"><path d="M47 50Q21 47 19 31Q14 14 26 20Q27 5 36 17Q47 5 49 20Q65 14 60 29Q60 41 47 50Z"/><path d="M59 32Q48 16 54 9Q57 3 63 10Q70 1 73 10Q84 8 78 19Q74 29 59 32Z" opacity=".8"/><path d="M72 16Q73 4 84 5Q94 9 84 16Z" opacity=".6"/></g>
+    <path d="M43 41Q28 29 31 24Q37 22 43 30Q49 23 53 27Q55 33 43 41Z" fill="#fff" opacity=".36"/><path d="M41 37L34 28M43 37L47 29" stroke="#edc26e" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="daisy" viewBox="0 0 100 100">
+    <g fill="currentColor"><ellipse cx="50" cy="25" rx="9" ry="22"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(30 50 50)" opacity=".8"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(60 50 50)"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(90 50 50)" opacity=".8"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(120 50 50)"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(150 50 50)" opacity=".8"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(180 50 50)"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(210 50 50)" opacity=".8"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(240 50 50)"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(270 50 50)" opacity=".8"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(300 50 50)"/><ellipse cx="50" cy="25" rx="9" ry="22" transform="rotate(330 50 50)" opacity=".8"/></g><circle cx="50" cy="50" r="14" fill="#eac675"/><circle cx="46" cy="46" r="3" fill="#fff3ce"/><circle cx="54" cy="53" r="2" fill="#d6a64d"/>
+  </symbol>
+  <symbol id="cherry" viewBox="0 0 100 100">
+    <g fill="currentColor"><path id="petal" d="M50 53Q26 34 33 15Q37 6 46 11L50 19L55 11Q66 6 69 18Q74 36 50 53Z"/><path d="M50 53Q26 34 33 15Q37 6 46 11L50 19L55 11Q66 6 69 18Q74 36 50 53Z" transform="rotate(72 50 50)" opacity=".8"/><path d="M50 53Q26 34 33 15Q37 6 46 11L50 19L55 11Q66 6 69 18Q74 36 50 53Z" transform="rotate(144 50 50)"/><path d="M50 53Q26 34 33 15Q37 6 46 11L50 19L55 11Q66 6 69 18Q74 36 50 53Z" transform="rotate(216 50 50)" opacity=".85"/><path d="M50 53Q26 34 33 15Q37 6 46 11L50 19L55 11Q66 6 69 18Q74 36 50 53Z" transform="rotate(288 50 50)"/></g><circle cx="50" cy="50" r="9" fill="#fff0d2"/><path d="M50 50L50 32M50 50L67 43M50 50L61 65M50 50L39 65M50 50L33 43" stroke="#efd599" stroke-width="2"/><g fill="#e4b762"><circle cx="50" cy="32" r="2.5"/><circle cx="67" cy="43" r="2.5"/><circle cx="61" cy="65" r="2.5"/><circle cx="39" cy="65" r="2.5"/><circle cx="33" cy="43" r="2.5"/></g>
+  </symbol>
+</svg>

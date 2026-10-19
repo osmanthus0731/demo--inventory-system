@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Select account — Meadow</title><link rel="stylesheet" href="{{ url_for('static',filename='platform.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='app-ui.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='login-garden.css',v='6') }}"><link rel="stylesheet" href="{{ url_for('static',filename='brand.css',v='1') }}"><link rel="stylesheet" href="{{ url_for('static',filename='i18n.css',v='1') }}"></head>
+<body class="account-body app-shell garden-login">
+  <div class="garden-wallpaper" aria-hidden="true"></div>
+  <div class="wallpaper-stack" aria-hidden="true"><div class="wallpaper-layer"></div><div class="wallpaper-layer"></div></div>
+  <main class="account-shell">
+    {% include 'platform/garden_brand.html' %}
+    <section class="account-panel"><span class="garden-eyebrow">MAKE YOURSELF AT HOME</span><h2>Who are you?</h2><p class="garden-intro" id="garden-greeting">Pick your little corner of the garden.</p>
+      {% if error %}<p class="platform-error" role="alert">{{ error }}</p>{% endif %}
+      {% if accounts %}<form method="post" id="account-form"><input type="hidden" name="platform_csrf" value="{{ token }}"><input type="hidden" name="username" id="selected-user">
+        <div class="account-grid">{% for u in accounts %}<button type="button" class="account-card" data-custom-appearance="{{ '1' if u.has_custom_appearance else '0' }}" data-flower="{{ u.login_appearance.flower_style }}" data-picture="{{ u.profile_picture }}" data-username="{{ u.username }}" data-name="{{ u.display_name or u.username }}" data-slide="{{ u.login_appearance.slide_color }}" data-highlight="{{ u.login_appearance.highlight_color }}" data-wallpaper="{{ u.login_appearance.wallpaper }}" aria-pressed="false"><i class="account-slide" aria-hidden="true"></i><span class="account-avatar">{{ (u.display_name or u.username)[:1]|upper }}</span><strong>{{ u.display_name or u.username }}</strong><small class="account-role">{{ u.role|capitalize }}</small><i class="account-arrow" aria-hidden="true">↗</i></button>{% endfor %}</div>
+        {% if not demo_mode %}<label class="account-pin">PIN<input type="password" name="pin" id="account-pin" inputmode="numeric" pattern="[0-9]{4,8}" minlength="4" maxlength="8" autocomplete="current-password" placeholder="Enter your 4–8 digit PIN" required disabled></label>{% endif %}<button type="submit" class="platform-primary account-login" disabled>Login</button>
+      </form>{% else %}<p>No active accounts are available. An administrator must run the reviewed user migration.</p>{% endif %}
+      <p class="account-note">{% if demo_mode %}Choose any demo account to explore. No PIN required.{% else %}Choose your account and enter your personal PIN.{% endif %}</p>
+    </section>
+  </main><p class="garden-caption">A little calm before the day begins.</p>
+  <script src="{{ url_for('static',filename='login-garden.js',v='6') }}" defer></script>
+<script src="{{ url_for('static',filename='i18n.js',v='1') }}" defer></script></body></html>

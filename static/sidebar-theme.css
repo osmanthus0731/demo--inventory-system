@@ -1,0 +1,15 @@
+/* Keep the navigation readable while bringing the user's garden colours inside. */
+.app-shell .sidebar.personal-sidebar{--sidebar-base:color-mix(in srgb,var(--user-tint) 22%,#181b22);--sidebar-soft:color-mix(in srgb,var(--user-tint) 14%,transparent);--sidebar-accent:color-mix(in srgb,var(--user-highlight) 45%,#fff);--sb-hover:var(--sidebar-soft);background:linear-gradient(165deg,var(--sidebar-base),color-mix(in srgb,var(--user-highlight) 20%,#181b22));color:#f3f5f0}
+.app-shell .personal-sidebar .m-handle,.app-shell .personal-sidebar .user-ava{background:color-mix(in srgb,var(--user-tint) 22%,#22262b);border-color:color-mix(in srgb,var(--user-tint) 24%,transparent);color:var(--sidebar-accent)}
+.app-shell .personal-sidebar .user-ava{width:34px;height:34px;flex-basis:34px;border-radius:11px}
+.personal-sidebar .user-ava svg{display:block;filter:drop-shadow(0 1px 2px #0002)}
+.app-shell .personal-sidebar:not(.expanded) .sb-userbtn{padding:6px}
+.app-shell .personal-sidebar .sb-item:hover{background:var(--sidebar-soft);color:#fff}
+.app-shell .personal-sidebar .sb-item.active{background:color-mix(in srgb,var(--user-tint) 4%,transparent);border:1px solid color-mix(in srgb,var(--user-tint) 7%,transparent);color:#fff}
+.app-shell .personal-sidebar .sb-item.active:before{background:var(--sidebar-accent);box-shadow:0 0 12px color-mix(in srgb,var(--user-highlight) 50%,transparent)}
+.app-shell .personal-sidebar .sb-item.active .sb-ico,.app-shell .personal-sidebar .sb-item:hover .sb-ico{color:var(--sidebar-accent)}
+.app-shell .personal-sidebar .sb-userbtn:hover{background:var(--sidebar-soft)}
+.app-shell .personal-sidebar .user-menu{background:var(--sidebar-base);border-color:color-mix(in srgb,var(--user-tint) 25%,transparent)}
+.app-shell .personal-sidebar .user-menu a:hover{background:var(--sidebar-soft)}
+.app-shell .personal-sidebar .user-role,.app-shell .personal-sidebar .sb-section{color:color-mix(in srgb,var(--user-tint) 50%,#c2c8c1)}
+.app-shell .personal-sidebar .sb-header,.app-shell .personal-sidebar .sb-footer{border-color:color-mix(in srgb,var(--user-tint) 16%,transparent)}

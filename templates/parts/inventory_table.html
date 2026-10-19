@@ -1,0 +1,14 @@
+<div class="table-wrap">
+  <table class="inventory-table">
+    <thead><tr><th>Product</th><th>Volume</th><th>Locations</th><th>Office stock</th><th style="text-align:right">Actions</th></tr></thead>
+    <tbody>{% for p in inventory_rows %}
+      <tr>
+        <td class="product-name"><a href="{{ url_for('item_detail',uid=p.uid,return_to=request.full_path) }}">{{ p.name or 'Unnamed product' }}</a><span class="product-category">{{ p.category or 'Uncategorized' }}</span></td>
+        <td>{{ (p.volume_ml|string) + ' ml' if p.volume_ml else '—' }}</td>
+        <td>{% for loc in p.locations or [] if loc.area %}<span class="chip">{{ loc.area }} <strong>{{ loc.quantity if loc.quantity is not none else '—' }}</strong></span>{% else %}<span class="muted">—</span>{% endfor %}</td>
+        <td class="quantity {{ 'negative' if p.stock is number and p.stock < 0 }}">{{ '{:,}'.format(p.stock) if p.stock is number else '—' }}</td>
+        <td><div class="row-actions"><button class="qr-action" type="button" data-qr="{{ p.uid }}" data-qr-url="{{ url_for('qr',uid=p.uid) }}" aria-label="Show QR for {{ p.name }}" aria-expanded="false">QR</button><a class="btn btn-secondary" href="{{ url_for('view_pricing',uid=p.uid) }}">Pricing</a>{% if 'stock.request' in platform_permissions %}<button class="btn" type="button" data-stock-edit="{{ p.uid }}">Edit Stock</button>{% endif %}</div><div class="qr-panel" hidden></div></td>
+      </tr>
+    {% else %}<tr><td colspan="5"><div class="empty-state"><strong>No products found</strong>Try another product name or clear your filters.</div></td></tr>{% endfor %}</tbody>
+  </table>
+</div>

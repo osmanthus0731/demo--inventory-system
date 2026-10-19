@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block title %}My Profile{% endblock %}
+{% block content %}
+<div class="card" style="max-width:880px;margin:auto;display:grid;gap:22px">
+  <h2 style="margin:0">My profile</h2>
+  <link rel="stylesheet" href="{{ url_for('static',filename='profile-picture.css',v='1') }}">
+  <form id="profile-picture-form" method="post" enctype="multipart/form-data" style="display:grid;gap:12px;max-width:520px">
+    <input type="hidden" name="platform_csrf" value="{{ platform_csrf }}">
+    <input type="hidden" name="action" value="update_profile_picture">
+    <h3 style="margin:0">Profile picture</h3>
+    {% if me.profile_picture %}<img src="{{ me.profile_picture }}" alt="Your profile picture" width="80" height="80" style="border-radius:50%;object-fit:cover">{% else %}<span aria-label="No profile picture" style="display:grid;place-items:center;width:80px;height:80px;border-radius:50%;background:#eaf0df;color:#536a45;font-size:28px">{{ (me.full_name or me.username)[:1]|upper }}</span>{% endif %}
+    <label style="display:grid;gap:8px">Choose a picture<input type="file" name="profile_picture" accept="image/jpeg,image/png,image/webp,image/gif"></label>
+    <small class="muted">Up to 2 MB. Choose a picture, then drag or use the controls to frame it.</small>
+    <p id="picture-error" role="alert" hidden></p>
+    <div id="picture-crop" hidden>
+      <div class="picture-previews"><div><div class="picture-crop-stage"><canvas id="picture-canvas" width="560" height="560" aria-label="Picture crop preview. Drag to reposition, or use the controls below."></canvas><div class="picture-crop-mask" aria-hidden="true"></div></div><small>Drag to move your picture</small></div><div class="picture-avatar-preview"><canvas id="picture-avatar" width="160" height="160" aria-label="Round avatar preview"></canvas><small>How you’ll look</small></div></div>
+      <label>Zoom<input type="range" name="crop_zoom" min="1" max="4" step="0.01" value="1"></label>
+      <label>Horizontal position<input type="range" name="crop_x" min="0" max="100" step="0.1" value="50"></label>
+      <label>Vertical position<input type="range" name="crop_y" min="0" max="100" step="0.1" value="50"></label>
+      <button class="btn platform-secondary" id="picture-reset" type="button">Reset crop</button>
+    </div>
+    <div><button class="btn" type="submit">Save picture</button>{% if me.profile_picture %} <button class="btn platform-secondary" type="submit" name="remove_picture" value="1">Remove picture</button>{% endif %}</div>
+  </form>
+
+  <div class="table-wrap" style="border:none;background:transparent">
+    <table>
+      <tbody>
+        <tr><th style="width:180px">Username</th><td>{{ me.username }}</td></tr>
+        <tr><th>Role</th><td>{{ me.role|capitalize }}</td></tr>
+        <tr><th>Created</th><td>{{ me.created_at|display_datetime }}</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  {% if platform_enabled %}
+  {% set appearance = me.login_appearance or {} %}
+  <form method="post" style="display:grid;gap:14px">
+    <input type="hidden" name="platform_csrf" value="{{ platform_csrf }}">
+    <input type="hidden" name="action" value="update_login_appearance">
+    <h3 style="margin:0">Login personalisation</h3>
+    <p class="muted" style="margin:0">Your colours appear inside your account card. Your wallpaper fades in when someone hovers or selects your account.</p>
+    <div class="profile-fields">
+      <label style="display:grid;gap:8px">Slide colour<input aria-label="Slide colour" type="color" name="slide_color" value="{{ appearance.slide_color or '#c8d7bb' }}" style="width:80px;height:44px"></label>
+      <label style="display:grid;gap:8px">Highlight colour<input aria-label="Highlight colour" type="color" name="highlight_color" value="{{ appearance.highlight_color or '#586f48' }}" style="width:80px;height:44px"></label>
+    </div>
+    <label style="display:grid;gap:8px">Flower style<select name="flower_style" id="flower-style">{% for value,label in [('cosmos','Cosmos'),('freesia','Freesia'),('daisy','Daisy'),('cherry','Cherry blossom')] %}<option value="{{ value }}" {% if (appearance.flower_style or 'cosmos')==value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <div style="display:flex;align-items:center;gap:14px;padding:14px;border:1px solid #dce2d3;border-radius:14px;background:#f8faf4"><svg id="profile-flower-preview" viewBox="0 0 100 100" width="64" height="64" aria-label="Flower preview" style="color:{{ appearance.highlight_color or '#586f48' }}"><use href="{{ url_for('static',filename='garden-flowers.svg') }}#{{ appearance.flower_style or 'cosmos' }}"></use></svg><small class="muted">Your flower, in your colour. Used on your login card and the Meadow panel.</small></div>
+    <label style="display:grid;gap:8px">Wallpaper image URL<input type="url" name="wallpaper" value="{{ appearance.wallpaper or '' }}" placeholder="https://example.com/your-wallpaper.jpg" maxlength="2048"></label>
+    <small class="muted">Use a direct HTTPS image link. Leave blank for the default login-meadow.png and its gentle 3-second motion loop.</small>
+    <div><button class="btn" type="submit">Save personalisation</button> <button class="btn platform-secondary" type="button" onclick="this.form.elements.slide_color.value='#c8d7bb';this.form.elements.highlight_color.value='#586f48';this.form.elements.wallpaper.value=''">Reset to meadow</button></div>
+  </form>
+  {% endif %}
+  <!-- Update basic info -->
+  <form method="post" style="display:grid;gap:12px">
+    <input type="hidden" name="platform_csrf" value="{{ platform_csrf }}">
+    <input type="hidden" name="action" value="update_profile">
+    <h3 style="margin:6px 0 0">Details</h3>
+    <div class="profile-fields">
+      <div style="display:grid;gap:6px">
+        <label>Full name</label>
+        <input name="full_name" value="{{ me.full_name or '' }}" placeholder="Your name">
+      </div>
+      <div style="display:grid;gap:6px">
+        <label>Email</label>
+        <input type="email" name="email" value="{{ me.email or '' }}" placeholder="you@company.com">
+      </div>
+      <div style="display:grid;gap:6px">
+        <label>Phone</label>
+        <input name="phone" value="{{ me.phone or '' }}" placeholder="+60 ...">
+      </div>
+    </div>
+    <div>
+      <button class="btn" type="submit">Save changes</button>
+    </div>
+  </form>
+
+  {% if not platform_enabled %}<hr style="border:none;height:1px;background:#eee">
+  <form method="post" style="display:grid;gap:12px;max-width:520px">
+    <input type="hidden" name="action" value="change_password">
+    <h3 style="margin:6px 0 0">Change password</h3>
+    <div style="display:grid;gap:6px">
+      <label>Current password</label>
+      <input type="password" name="current_password" required placeholder="••••••">
+    </div>
+    <div style="display:grid;gap:6px">
+      <label>New password</label>
+      <input type="password" name="new_password" required placeholder="At least 6 characters">
+    </div>
+    <div style="display:grid;gap:6px">
+      <label>Confirm new password</label>
+      <input type="password" name="confirm_password" required placeholder="Repeat new password">
+    </div>
+    <div>
+      <button class="btn" type="submit">Update password</button>
+    </div>
+  </form>
+  {% else %}<p class="muted">This installation uses password-free account selection. Administrators manage usernames, display names, roles, and activation from Users.</p>{% endif %}
+</div>
+{% endblock %}
+{% block scripts %}<script src="{{ url_for('static',filename='profile-picture.js',v='1') }}" defer></script><script src="{{ url_for('static',filename='profile-flowers.js',v='1') }}" defer></script>{% endblock %}

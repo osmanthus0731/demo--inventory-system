@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: stock-checker-demo
+    runtime: python
+    buildCommand: pip install -r requirements-demo.txt
+    startCommand: gunicorn run_demo:module.app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.7

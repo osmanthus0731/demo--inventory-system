@@ -1,0 +1,74 @@
+.garden-login{--garden-accent:#586f48}
+.brand-flower-art{position:relative;isolation:isolate;display:inline-block;width:42px;height:42px;vertical-align:middle}
+.brand-flower-art svg{display:block;width:100%;height:100%;color:color-mix(in srgb,var(--brand-accent) 45%,var(--brand-tint));filter:drop-shadow(0 2px 3px #ffffff80);transition:color .6s}
+.slider-flower svg{display:block;width:1.1em;height:1.1em;overflow:visible}
+.brand-floating-flowers span.brand-flower-art{width:64px;height:64px;opacity:.8}
+.brand-floating-flowers span.brand-flower-art:nth-child(2){width:82px;height:82px;opacity:.65}
+.brand-floating-flowers span.brand-flower-art:nth-child(3){width:36px;height:36px;opacity:.65}
+.account-brand h1 .brand-title-flower{font-size:0;text-shadow:none;width:42px;height:42px}
+.garden-login{--brand-tint:#dbe9ce;--brand-accent:#617b50}
+.app-shell.garden-login .account-shell>.account-brand{background:linear-gradient(155deg,color-mix(in srgb,var(--brand-tint) 58%,transparent),color-mix(in srgb,var(--brand-tint) 76%,transparent));transition:background .65s}
+.brand-title-flower{display:inline-block;font-size:28px;color:color-mix(in srgb,var(--brand-tint) 20%,#fffbed);text-shadow:0 2px 3px color-mix(in srgb,var(--brand-accent) 30%,transparent);vertical-align:middle;transform:rotate(-12deg)}
+.brand-floating-flowers{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.brand-floating-flowers span{position:absolute;right:26px;top:20%;font-size:34px;color:color-mix(in srgb,var(--brand-tint) 45%,white);text-shadow:0 2px 12px #ffffff70;animation:brand-flower-float 6s ease-in-out infinite}
+.brand-floating-flowers span:nth-child(2){top:68%;right:32px;font-size:43px;opacity:.8;animation-delay:-2s}
+.brand-floating-flowers span:nth-child(3){top:76%;right:84px;font-size:18px;color:color-mix(in srgb,var(--brand-accent) 30%,white);animation-delay:-4s}
+@keyframes brand-flower-float{0%,100%{transform:translateY(0) rotate(-8deg)}50%{transform:translateY(-7px) rotate(10deg)}}
+.logout-wallpaper{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none}
+.app-shell.garden-logout .account-shell{max-width:940px;grid-template-columns:38% 62%}
+.app-shell.garden-logout .logout-panel{display:flex;flex-direction:column;justify-content:center;padding:52px 44px}
+.logout-panel h1{font-size:32px;line-height:1.2;letter-spacing:-.8px;font-weight:600;margin:16px 0 12px;color:#344332}
+.logout-intro{font-size:14px;line-height:1.7;color:#717a66;margin:0 0 28px}
+.logout-identity{display:flex;align-items:center;gap:13px;padding:16px;border:1px solid color-mix(in srgb,var(--brand-tint) 65%,white);border-radius:16px;background:color-mix(in srgb,var(--brand-tint) 22%,white)}
+.logout-identity img,.logout-initial{width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0}
+.logout-initial{display:grid;place-items:center;background:var(--brand-tint);color:#354334;font-size:20px}
+.logout-identity strong{display:block;font-size:14px;overflow-wrap:anywhere}.logout-identity small{display:block;margin-top:5px;font-size:11px;color:#717a66}
+.logout-actions{display:grid;gap:13px}.logout-stay{text-align:center;text-decoration:none;font-size:13px;color:#53694d;border:1px solid #dce2d3;border-radius:13px;padding:13px;background:#ffffffa8;transition:background .2s}
+.logout-stay:hover{background:#fff}.logout-stay:focus-visible{outline:2px solid var(--brand-accent);outline-offset:3px}
+@media(max-width:760px){.app-shell.garden-logout .account-shell{grid-template-columns:1fr}.app-shell.garden-logout .logout-panel{padding:30px 28px}.logout-panel h1{font-size:27px}.brand-floating-flowers span:nth-child(2){top:60%;right:20px}.brand-floating-flowers span:nth-child(3){display:none}}
+.account-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block}
+.app-shell.account-body.garden-login{position:relative;isolation:isolate;min-height:100svh;box-sizing:border-box;padding:60px 28px;background:#e6dcca;color:#354334;overflow-x:hidden;align-content:center;gap:22px;font-family:'Segoe UI',sans-serif}
+.garden-wallpaper,.wallpaper-stack{position:fixed;inset:0;z-index:-3;pointer-events:none;overflow:hidden}
+.garden-wallpaper{background:linear-gradient(#fff6d91a,#303e462b),url('login-meadow.png') center 58%/cover no-repeat;animation:meadow-breathe 3s ease-in-out infinite}
+.wallpaper-stack{z-index:-2}
+.wallpaper-layer{position:absolute;inset:-1%;background-position:center;background-size:cover;opacity:0;transition:opacity .65s ease;will-change:opacity}
+.wallpaper-layer.visible{opacity:1}
+.app-shell.garden-login .account-shell{position:relative;width:min(1030px,100%);grid-template-columns:34% 66%;border:1px solid #fffc;border-radius:28px;overflow:hidden;background:#fffdf659;box-shadow:0 24px 90px #313a3930;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.app-shell.garden-login .account-brand{position:relative;min-height:510px;box-sizing:border-box;padding:44px 34px;background:linear-gradient(160deg,#edf3dff2,#dce7cce8);color:#354d35;justify-content:center}
+.garden-eyebrow{display:block;font-size:10px;font-weight:650;letter-spacing:2px;color:#6c7c61}
+.app-shell.garden-login .account-brand h1{font-size:42px;line-height:1.08;font-weight:600;letter-spacing:-1.8px;margin:25px 0 20px}
+.app-shell.garden-login .account-brand p{font-size:13px;line-height:1.9;color:#53694d}
+.brand-footnote{position:absolute;bottom:32px;font-size:11px;letter-spacing:.5px;color:#6c7c61}
+.app-shell.garden-login .account-panel{padding:44px 40px;background:#fffcf5ad}
+.app-shell.garden-login .account-panel h2{font-size:30px;font-weight:600;letter-spacing:-.8px;color:#344332;margin:12px 0 8px}
+.garden-intro{font-size:13px;color:#717a66;min-height:22px;margin:0 0 28px;line-height:1.6}
+.app-shell.garden-login .account-grid{gap:14px}
+.app-shell.garden-login .account-card{--slide-color:#c8d7bb;--highlight-color:#586f48;position:relative;isolation:isolate;overflow:hidden;min-height:136px;padding:16px;border:1px solid #dce2d3;border-radius:18px;background:#fffffff0;gap:7px;color:#354334;transition:box-shadow .3s,border-color .3s;align-content:start}
+.account-slide{position:absolute;z-index:-1;inset:0 0 0 auto;width:100%;border-radius:16px;background:radial-gradient(ellipse at 100% 20%,color-mix(in srgb,var(--slide-color) 55%,white),transparent 78%),linear-gradient(115deg,transparent 15%,color-mix(in srgb,var(--slide-color) 24%,white));transform:translateX(110%);opacity:.95;backdrop-filter:blur(3px);transition:transform .65s cubic-bezier(.22,1,.36,1)}
+.app-shell.garden-login .account-card .account-avatar{width:36px;height:36px;border-radius:50%;background:#eaf0df;color:#536a45;font-size:14px;font-weight:600;display:grid;place-items:center}
+.app-shell.garden-login .account-card strong{font-size:13px;font-weight:650;overflow-wrap:anywhere;max-width:88%}
+.app-shell.garden-login .account-card .account-role{font-size:10px;color:#54604c}
+.app-shell.garden-login .account-card:hover,.app-shell.garden-login .account-card:focus-visible{outline:none;border-color:color-mix(in srgb,var(--highlight-color) 55%,white);box-shadow:0 8px 24px #35433412;background:#fff;transform:translateY(-3px)}
+.app-shell.garden-login .account-card.selected{outline:none;border-color:var(--highlight-color);box-shadow:0 0 0 2px color-mix(in srgb,var(--highlight-color) 28%,transparent),0 8px 24px #3543340c;background:#fff}
+.app-shell.garden-login .account-card:focus-visible{outline:2px solid var(--highlight-color);outline-offset:3px}
+.app-shell.garden-login .account-card{min-height:126px;border-radius:16px;gap:9px;transition:transform .3s,box-shadow .3s,border-color .3s}
+.app-shell.garden-login .account-card .account-avatar{background:color-mix(in srgb,var(--slide-color) 35%,white);color:var(--highlight-color);border-radius:11px}
+.app-shell.garden-login .account-card strong{font-size:12px;font-weight:600}
+.account-slide .slider-flower{position:absolute;right:13px;top:12px;font-size:27px;line-height:1;font-style:normal;color:color-mix(in srgb,var(--highlight-color) 65%,var(--slide-color));text-shadow:0 2px 6px #ffffffb3;transform:rotate(-25deg) scale(.6);transition:transform .7s cubic-bezier(.22,1,.36,1);opacity:.85}
+.account-slide .slider-flower:nth-child(2){right:30px;top:auto;bottom:13px;font-size:37px;color:color-mix(in srgb,var(--slide-color) 80%,var(--highlight-color));opacity:.6}
+.account-slide .slider-flower:nth-child(3){right:8px;top:56%;font-size:15px;color:var(--highlight-color);opacity:.4}
+.account-card:hover .slider-flower,.account-card:focus-visible .slider-flower,.account-card.selected .slider-flower{transform:rotate(12deg) scale(1)}
+.account-card:hover .slider-flower:nth-child(2),.account-card.selected .slider-flower:nth-child(2){transform:rotate(-14deg) scale(1)}
+.account-arrow{display:none}
+.app-shell.garden-login .account-card .slider-flower{width:auto;height:auto;background:none;border-radius:0;display:block;font-weight:400}
+.account-card:hover .account-slide,.account-card:focus-visible .account-slide,.account-card.selected .account-slide{transform:translateX(0)}
+.account-arrow{position:absolute;right:12px;bottom:12px;font-style:normal;font-size:19px;color:#354334;opacity:0;transform:translateX(8px);transition:opacity .3s,transform .4s}
+.account-card:hover .account-arrow,.account-card:focus-visible .account-arrow,.account-card.selected .account-arrow{opacity:1;transform:translateX(0)}
+.app-shell.garden-login .account-login{min-height:46px!important;margin-top:26px;border-radius:13px!important;background:var(--garden-accent)!important;border-color:var(--garden-accent)!important;transition:background .3s}
+.account-pin{display:grid;gap:7px;margin-top:20px;font-size:12px;font-weight:650;color:#53694d}.account-pin input{box-sizing:border-box;width:100%;min-height:44px;padding:10px 13px;border:1px solid #dce2d3;border-radius:12px;background:#fffffff0;font:inherit;font-size:16px;letter-spacing:.18em;color:#354334}.account-pin input:focus{outline:2px solid var(--garden-accent);outline-offset:2px}.account-pin+.account-login{margin-top:12px!important}
+.app-shell.garden-login .account-login:hover:enabled{filter:brightness(.92)}
+.app-shell.garden-login .account-note{color:#737b66;font-size:10px;margin:18px 0 0;line-height:1.8}
+.garden-caption{margin:0;font-size:11px;letter-spacing:1px;color:#fffdf1;text-shadow:0 1px 5px #29372b99}
+@keyframes meadow-breathe{0%,100%{transform:scale(1.025) translateX(-.12%);filter:brightness(1)}50%{transform:scale(1.035) translateX(.12%);filter:brightness(1.035)}}
+@media(max-width:760px){.app-shell.account-body.garden-login{padding:24px 16px;gap:16px}.app-shell.garden-login .account-shell{max-width:530px;grid-template-columns:1fr;border-radius:22px}.app-shell.garden-login .account-brand{min-height:220px;padding:26px 28px 40px}.app-shell.garden-login .account-brand h1{font-size:33px;margin:14px 0 10px}.app-shell.garden-login .account-brand p{margin:0}.brand-footnote{display:none}.app-shell.garden-login .account-panel{padding:28px}.app-shell.garden-login .account-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.app-shell.garden-login .account-card{min-height:126px}.garden-intro{margin-bottom:20px}}
+@media(prefers-reduced-motion:reduce){.garden-login *,.garden-login *:before,.garden-login *:after{animation:none!important;transition:none!important}.garden-wallpaper{transform:scale(1.025)}}

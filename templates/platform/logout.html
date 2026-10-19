@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Log out · Meadow</title><link rel="stylesheet" href="{{ url_for('static',filename='platform.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='app-ui.css') }}"><link rel="stylesheet" href="{{ url_for('static',filename='login-garden.css',v='6') }}"><link rel="stylesheet" href="{{ url_for('static',filename='brand.css',v='1') }}"><link rel="stylesheet" href="{{ url_for('static',filename='i18n.css',v='1') }}"></head>
+{% set appearance = logout_user.login_appearance if logout_user else {} %}
+<body class="account-body app-shell garden-login garden-logout" style="--brand-tint:{{ appearance.slide_color or '#dbe9ce' }};--brand-accent:{{ appearance.highlight_color or '#617b50' }};--garden-accent:{{ appearance.highlight_color or '#586f48' }}">
+  <div class="garden-wallpaper" aria-hidden="true"></div>
+  {% if appearance.wallpaper %}<img class="logout-wallpaper" src="{{ appearance.wallpaper }}" alt="" referrerpolicy="no-referrer" onerror="this.remove()">{% endif %}
+  <main class="account-shell">
+    {% include 'platform/garden_brand.html' %}
+    <section class="account-panel logout-panel">
+      <span class="garden-eyebrow">UNTIL NEXT TIME</span><h1>Taking a little break?</h1><p class="logout-intro">Leave things here. Come back refreshed.</p>
+      <div class="logout-identity">{% if logout_user and logout_user.profile_picture %}<img src="{{ logout_user.profile_picture }}" alt="" width="48" height="48">{% else %}<span class="logout-initial" aria-hidden="true">{{ (session.username or 'M')[:1]|upper }}</span>{% endif %}<div><strong>{{ logout_user.display_name if logout_user else session.username }}</strong><small>Currently signed in · {{ session.role|capitalize }}</small></div></div>
+      <form method="post" class="logout-actions"><input type="hidden" name="platform_csrf" value="{{ platform_csrf }}"><button class="platform-primary account-login" type="submit">Yes, log out</button><a class="logout-stay" href="{{ url_for('admin_dashboard') if session.role=='admin' else url_for('index') }}">Stay signed in</a></form>
+      <p class="account-note">You can select your account again whenever you’re ready.</p>
+    </section>
+  </main><p class="garden-caption">A little calm at the end of the day.</p>
+<script src="{{ url_for('static',filename='i18n.js',v='1') }}" defer></script></body></html>

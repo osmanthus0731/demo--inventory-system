@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — Meadow{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>{{ title }}</h1><p>{{ count }} matching products</p></div><a class="btn btn-secondary" href="{{ url_for('admin_dashboard' if session.role=='admin' else 'index') }}">Back to overview</a></div>
+<form class="filter-bar" method="get"><label class="filter-search">Search products<input name="q" value="{{ q }}" placeholder="Product, UID or category"></label><label>Stock status<select name="status">{% for value,label in [('all','All products'),('in_stock','In stock'),('out_of_stock','Out of stock'),('negative','Negative stock')] %}<option value="{{ value }}" {{ 'selected' if status==value }}>{{ label }}</option>{% endfor %}</select></label><button class="btn">Search</button></form>
+{% include 'parts/inventory_table.html' %}
+<nav class="pagy product-pagination" aria-label="Product pages">
+  <div class="pages-left">
+    {% if page>1 %}<a class="btn btn-secondary" href="{{ url_for('inventory_product_list',status=status,q=q,page=page-1) }}" aria-label="Previous page">Previous</a>{% endif %}
+    {% for number in range(1,total_pages+1) %}
+      {% if number==page %}<span class="btn active" aria-current="page">{{ number }}</span>
+      {% else %}<a class="btn" href="{{ url_for('inventory_product_list',status=status,q=q,page=number) }}" aria-label="Page {{ number }}">{{ number }}</a>{% endif %}
+    {% endfor %}
+    {% if page<total_pages %}<a class="btn btn-secondary" href="{{ url_for('inventory_product_list',status=status,q=q,page=page+1) }}" aria-label="Next page">Next</a>{% endif %}
+  </div>
+  <form class="jump" method="get"><input type="hidden" name="status" value="{{ status }}"><input type="hidden" name="q" value="{{ q }}"><label for="product-page-jump">Go to page</label><input id="product-page-jump" type="number" name="page" min="1" max="{{ total_pages }}" value="{{ page }}" required aria-label="Go to page"><span class="muted">of {{ total_pages }}</span><button class="btn btn-secondary" type="submit">Go</button></form>
+</nav>
+{% endblock %}

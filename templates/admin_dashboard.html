@@ -1,0 +1,251 @@
+{% extends "index.html" %}
+{% block title %}Inventory overview{% endblock %}
+
+{% block content %}
+
+
+<div class="dash-grid">
+  <!-- ================= LEFT: dashboard table ================= -->
+  <div>
+    <div class="page-heading"><div><span class="eyebrow">Inventory workspace</span><h1>Inventory overview</h1><p>A quick view of stock health, followed by the products you manage.</p></div><details class="create-menu"><summary class="btn">+ Create</summary><div><a href="{{ url_for('documents.new',kind='quotation') }}">New Quotation</a><a href="{{ url_for('documents.new',kind='proforma') }}">New Proforma Invoice</a><a href="{{ url_for('documents.new',kind='delivery') }}">New Delivery Order</a><a href="{{ url_for('purchase_orders.new') }}">New Purchase Order</a></div></details></div>
+
+    <section class="overview-panel" aria-label="Inventory summary">
+      <div class="overview-metrics">
+        <a href="{{ url_for('inventory_product_list',status='all') }}"><span>Total products</span><strong>{{ overview.products }}</strong><small>Browse and search all products</small></a>
+        <a href="{{ url_for('inventory_product_list',status='in_stock') }}"><span>In stock</span><strong>{{ overview.in_stock }}</strong><small>Products with stock available</small></a>
+        <a href="{{ url_for('inventory_product_list',status='out_of_stock') }}"><span>Out of stock</span><strong>{{ overview.out_of_stock }}</strong><small>Products that need review</small></a>
+        <a href="{{ url_for('inventory_product_list',status='negative') }}"><span>Negative stock</span><strong>{{ overview.negative }}</strong><small>Possible reconciliation issues</small></a>
+      </div>
+      <div class="overview-actions"><div><strong>Suggested next step</strong><span>{% if overview.negative %}Review {{ overview.negative }} negative-stock product{{ '' if overview.negative == 1 else 's' }}.{% elif overview.out_of_stock %}Review {{ overview.out_of_stock }} out-of-stock product{{ '' if overview.out_of_stock == 1 else 's' }}.{% else %}Stock levels look ready for routine review.{% endif %}</span></div><nav aria-label="Quick actions"><a href="{{ url_for('search_admin') }}">Search inventory</a>{% if platform_enabled %}<a href="{{ url_for('platform.page',section='history') }}">View stock history</a><a href="{{ url_for('platform.page',section='analytics') }}">Open analytics</a>{% endif %}</nav></div>
+    </section>
+
+    <form method="get" class="filter-bar">
+      <label>Category
+      <select name="filter_category">
+        {% for c in categories %}
+          <option value="{{ c }}" {{ 'selected' if selected_category == c }}>{{ c }}</option>
+        {% endfor %}
+      </select></label>
+
+      <label>Volume
+      <select name="volume">
+        <option value="" {{ 'selected' if not selected_volume }}>Any</option>
+        {% for v in volumes %}
+          <option value="{{ v }}" {{ 'selected' if selected_volume == (v|string) }}>{{ v }} ml</option>
+        {% endfor %}
+      </select></label>
+
+      <label>Location
+      <input type="text" name="location" placeholder="e.g. G8 / A1" value="{{ location or '' }}" /></label>
+
+      <div class="filter-actions"><button class="btn" type="submit">Apply filters</button><a class="btn btn-secondary" href="{{ url_for('admin_dashboard') }}">Reset</a></div>
+    </form>
+
+    {% set inventory_rows = products %}{% include 'parts/inventory_table.html' %}
+
+    {% if total_pages > 1 %}
+      <div class="pagy">
+        <div class="pages-left">
+          <!-- first page -->
+          {% if page == 1 %}
+            <span class="btn active">1</span>
+          {% else %}
+            <a class="btn" href="{{ url_for('admin_dashboard', page=1, filter_category=selected_category, volume=selected_volume, location=location) }}">1</a>
+          {% endif %}
+
+          {% if pages and pages[0] > 2 %}
+            <span class="muted">…</span>
+          {% endif %}
+
+          <!-- window -->
+          {% for i in pages %}
+            {% if i != 1 and i != total_pages %}
+              {% if i == page %}
+                <span class="btn active">{{ i }}</span>
+              {% else %}
+                <a class="btn" href="{{ url_for('admin_dashboard', page=i, filter_category=selected_category, volume=selected_volume, location=location) }}">{{ i }}</a>
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {% if pages and pages[-1] < total_pages - 1 %}
+            <span class="muted">…</span>
+          {% endif %}
+
+          <!-- last page -->
+          {% if page == total_pages %}
+            <span class="btn active">{{ total_pages }}</span>
+          {% else %}
+            <a class="btn" href="{{ url_for('admin_dashboard', page=total_pages, filter_category=selected_category, volume=selected_volume, location=location) }}">{{ total_pages }}</a>
+          {% endif %}
+
+          <span class="muted tiny">
+            ({{ ((page-1)*per_page + 1) }}–{{ [page*per_page, total_items]|min }} of {{ total_items }})
+          </span>
+        </div>
+
+        <!-- ✅ Instant "Go to page" -->
+        <div class="jump">
+          <span class="muted">Go to page</span>
+          <input id="pageJump"
+                 type="number"
+                 min="1"
+                 max="{{ total_pages }}"
+                 value="{{ page }}"
+                 inputmode="numeric" />
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ================= RIGHT: People Online/Offline widget ================= -->
+  <div>
+    <div class="card people-card">
+      <div class="people-head">
+        <div class="people-title">People</div>
+        <div class="people-meta" id="presenceMeta">Loading…</div>
+      </div>
+
+      <div class="mini">Team availability</div>
+
+      <div class="people-section">
+        <h4>Online</h4>
+        <div id="onlineList" class="mini">Loading…</div>
+      </div>
+
+      <div class="people-section">
+        <h4>Offline</h4>
+        <div id="offlineList" class="mini">Loading…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // QR toggle
+  function toggleQR(uid){
+    const wrap = document.getElementById('qrwrap-' + uid);
+    if(!wrap) return;
+
+    const visible = wrap.style.display === 'block';
+    if(visible){
+      wrap.style.display = 'none';
+      return;
+    }
+
+    if(!wrap.querySelector('img')){
+      const img = document.createElement('img');
+      img.width = 96;
+      img.height = 96;
+      img.className = 'qrimg';
+      img.loading = 'lazy';
+      img.src = "{{ url_for('qr', uid='__UID__') }}".replace('__UID__', uid);
+      wrap.appendChild(img);
+    }
+
+    wrap.style.display = 'block';
+  }
+
+  // Instant page jump (Enter or blur)
+  (function(){
+    const inp = document.getElementById("pageJump");
+    if(!inp) return;
+
+    const totalPages = {{ total_pages|int }};
+
+    function go(){
+      let p = parseInt(inp.value || "1", 10);
+      if(!Number.isFinite(p)) p = 1;
+      p = Math.max(1, Math.min(totalPages, p));
+
+      const url = new URL(window.location.href);
+      url.searchParams.set("page", String(p));
+      window.location.href = url.toString();
+    }
+
+    inp.addEventListener("keydown", (e) => {
+      if(e.key === "Enter"){
+        e.preventDefault();
+        go();
+      }
+    });
+
+    inp.addEventListener("blur", () => { go(); });
+  })();
+
+  // ✅ People Online/Offline widget (needs /api/presence/status in app.py)
+  (function(){
+    const meta = document.getElementById("presenceMeta");
+    const onlineEl = document.getElementById("onlineList");
+    const offlineEl = document.getElementById("offlineList");
+
+    if (!meta || !onlineEl || !offlineEl) return;
+
+    function esc(s){
+      return String(s ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#39;");
+    }
+
+    function relativeTime(seconds){
+      if(seconds < 60) return 'Just now';
+      if(seconds < 3600) return Math.floor(seconds/60)+'m ago';
+      if(seconds < 86400) return Math.floor(seconds/3600)+'h ago';
+      return Math.floor(seconds/86400)+'d ago';
+    }
+    function personRow(u, online){
+      const dotClass = online ? "dot on" : "dot off";
+      const right = online ? "now" : (u.seconds_ago == null ? "" : relativeTime(Number(u.seconds_ago)));
+      return `
+        <div class="person">
+          <div class="person-left">
+            <span class="${dotClass}"></span>
+            <div style="min-width:0">
+              <div class="person-name">${esc(u.username)}</div>
+              <div class="person-role">${esc(u.role || "")}</div>
+            </div>
+          </div>
+          <div class="person-right">${esc(right)}</div>
+        </div>
+      `;
+    }
+
+    async function refresh(){
+      try{
+        const res = await fetch("/api/presence/status", { headers: { "Accept": "application/json" }});
+        if(!res.ok) throw new Error("HTTP " + res.status);
+        const data = await res.json();
+        if(!data || !data.ok) throw new Error("bad json");
+
+        const on = data.online || [];
+        const off = data.offline || [];
+
+        meta.textContent = `${on.length} online`;
+
+        onlineEl.innerHTML = on.length
+          ? on.map(u => personRow(u, true)).join("")
+          : `<div class="mini">No one online.</div>`;
+
+        const OFF_LIMIT = 12;
+        offlineEl.innerHTML = off.length
+          ? off.slice(0, OFF_LIMIT).map(u => personRow(u, false)).join("") +
+            (off.length > OFF_LIMIT ? `<div class="mini" style="padding-top:6px;">+${off.length - OFF_LIMIT} more…</div>` : "")
+          : `<div class="mini">Everyone is online.</div>`;
+      }catch(e){
+        meta.textContent = "Presence offline";
+        onlineEl.innerHTML = `<div class="mini">Loading failed.</div>`;
+        offlineEl.innerHTML = `<div class="mini">Loading failed.</div>`;
+      }
+    }
+
+    refresh();
+    setInterval(refresh, 10000);
+    window.addEventListener('meadow:update', event => {
+      if (event.detail.channels.includes('presence')) refresh();
+    });
+  })();
+</script>
+{% endblock %}

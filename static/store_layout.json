@@ -1,0 +1,16 @@
+{
+  "source": "Fictional demo warehouse",
+  "note": "Invented layout and rack names. Does not represent a real warehouse.",
+  "width": 800,
+  "depth": 600,
+  "regions": [
+    {"id":"demo-1","code":"DEMO1","label":"DEMO1 · Meadow shelf","x":100,"y":120,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-2","code":"DEMO2","label":"DEMO2 · Aster shelf","x":300,"y":120,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-3","code":"DEMO3","label":"DEMO3 · Willow shelf","x":500,"y":120,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-4","code":"DEMO4","label":"DEMO4 · Clover shelf","x":100,"y":330,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-5","code":"DEMO5","label":"DEMO5 · Fern shelf","x":300,"y":330,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-6","code":"DEMO6","label":"DEMO6 · Blossom shelf","x":500,"y":330,"width":90,"depth":130,"kind":"rack"},
+    {"id":"demo-7","code":"DEMO7","label":"DEMO7 · Sample receiving bay","x":665,"y":70,"width":105,"depth":180,"kind":"room"},
+    {"id":"demo-8","code":"DEMO8","label":"DEMO8 · Sample dispatch bay","x":665,"y":330,"width":105,"depth":180,"kind":"room"}
+  ]
+}
