@@ -17,7 +17,7 @@ os.environ.update(MONGO_URI='mongodb://localhost/mizitco_demo',MONGO_DB='mizitco
     STOCK_WRITES_ENABLED='1',PLATFORM_CONFIG_WRITES='1',FLASK_SECRET=secrets.token_urlsafe(32))
 database=mongomock.MongoClient()
 with patch('dotenv.load_dotenv',return_value=False),patch('pymongo.MongoClient',return_value=database):
-    import app as module
+    import application as module
 from seed_data import seed
 seed(module.db)
 from purchase_orders.domain import COMPANY
