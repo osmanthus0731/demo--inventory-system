@@ -6,6 +6,8 @@ Run `setup_demo.bat` once (internet required to install dependencies), then `sta
 
 To publish it as a recruiter showcase, create a Render Web Service from this folder. The included `render.yaml` installs the demo-only requirements and starts the isolated demo app. All changes reset on restart or redeploy.
 
+Vercel is also supported. Import this repository as a Vercel project and deploy it with the default settings. `api/index.py` starts the same isolated fictional demo; its in-memory changes can reset whenever Vercel recycles or scales the function.
+
 Accounts: Maya and Noah are Admins; Eli is a Worker. Select any account and click Login. No PIN is required in the demo.
 
 The generated demo uses Meadow branding and a fictional company/logo. Operational branding is not used in demo pages or generated documents.
