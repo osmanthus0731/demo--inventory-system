@@ -8,7 +8,9 @@
   let hoveredRack=null,pointerAim=null,lastHoverPick=0;
   function showHoveredRack(rack){if(hoveredRack===rack)return;hoveredRack=rack;dialog.dataset.hoveredRack=rack||'';hoverLabel.hidden=!rack;hoverLabel.textContent=rack?'Rack '+rack+' - Click for items':'';}
   const popup=document.querySelector('#walk-popup'),popupContent=document.querySelector('#walk-popup-content'),quickSearch=document.querySelector('#walk-quick-search');
-  function stopGuide(){route=[];thirdPerson=false;cameraMenu.value='first';}
+  function stopGuide(){route=[];thirdPerson=false;cameraMenu.value='first';guidanceState='idle';}
+  function finishGuide(){stopGuide();keys.clear();momentum.x=momentum.y=0;destination='';menu.value='';guidanceState='idle';targetPitch=0;selection.textContent='Guidance finished. Explore freely in first person.';hud.textContent='Choose a destination, or explore freely.';document.querySelector('#store-map').dispatchEvent(new Event('walk-route-done'));canvas.focus({preventScroll:true});}
+  function arrive(){stopGuide();keys.clear();momentum.x=momentum.y=0;targetPitch=0;guidanceState='arrived';const rack=data.layout.regions.find(r=>r.code===destination);if(rack)targetYaw=Math.atan2(rack.x+rack.width/2-position.x,rack.y+rack.depth/2-position.y);selection.textContent=`Arrived at ${destination}. First person view — aim at the rack and click to inspect its items.`;document.querySelector('#store-map').dispatchEvent(new Event('walk-route-done'));}
   function releaseMouse(){keys.clear();momentum.x=momentum.y=0;if(document.pointerLockElement===canvas)document.exitPointerLock();}
   function openPopup(title,searching=false){showHoveredRack(null);controlMode='popup';dialog.dataset.mode='popup';releaseMouse();document.querySelector('#walk-popup-title').textContent=title;document.querySelector('#walk-quick-label').hidden=!searching;popupContent.replaceChildren();popup.showModal();if(searching){quickSearch.value='';fillQuickResults();quickSearch.focus();}}
   function closePopup(){popup.close();controlMode='explore';canvas.focus({preventScroll:true});if(!phone())captureMouse();}
@@ -59,7 +61,7 @@
 
   let touchLook=null,ignoreMouseUntil=0,ownFullscreen=false;
   let followDistance=105;
-  let thirdPerson=false,controlMode='cursor',targetYaw=Math.PI,targetPitch=0,worldFaces=[],solids=[],frameWorld=[],building=false,cameraOrigin={x:0,y:0,z:42},options=[];
+  let thirdPerson=false,controlMode='cursor',targetYaw=Math.PI,targetPitch=0,worldFaces=[],solids=[],frameWorld=[],building=false,cameraOrigin={x:0,y:0,z:42},options=[],guidanceState='idle';
   const momentum={x:0,y:0};let grounded=true,hops=0;
   const keys=new Set();let data,position={x:0,y:0,z:0},yaw=Math.PI,pitch=0,velocity=0,last=0,frame=0,route=[],destination='',faces=[],hits=[],generation=0;
   const code=value=>{const match=String(value||'').trim().toUpperCase().match(/^([A-Z]+)\s*0*(\d+)(?=$|[^0-9])/);return match?match[1]+Number(match[2]):String(value||'').toUpperCase().replace(/[^A-Z0-9]/g,'');};
@@ -143,7 +145,7 @@
     if(!depthRenderer&&performance.now()-lastHoverPick>120){lastHoverPick=performance.now();const aim=controlMode==='explore'?{x:canvas.width/2,y:canvas.height/2}:pointerAim;showHoveredRack(controlMode!=='popup'&&aim?rackAt(aim.x,aim.y):null);}
     // Direction beacons stay readable even when the chosen rack is behind you.
     if(destination){const r=data.layout.regions.find(r=>r.code===destination),dx=r.x+r.width/2-position.x,dy=r.y+r.depth/2-position.y,distance=Math.hypot(dx,dy),relative=Math.atan2(Math.sin(Math.atan2(dx,dy)-yaw),Math.cos(Math.atan2(dx,dy)-yaw));
-      const arrow=Math.abs(relative)<.18?'↑':relative<0?'→':'←';hud.textContent=`${arrow} ${destination} · ${Math.round(distance)} map units${route.length?' · Auto-guide active':''}${destination==='G8'?' · Level 2: guide stops at ground-floor approach':''}`;
+      const arrow=Math.abs(relative)<.18?'↑':relative<0?'→':'←';hud.textContent=guidanceState==='blocked'?'Route blocked. Choose Auto-guide to recalculate.':guidanceState==='arrived'?`Arrived at ${destination} · First person${destination==='G8'?' · Ground-floor approach':''}`:`${arrow} ${destination} · ${Math.round(distance)} map units${route.length?' · Auto-guide active':''}${destination==='G8'?' · Level 2: guide stops at ground-floor approach':''}`;
       const beacon=camera([r.x+r.width/2,r.y+r.depth/2,88]);if(beacon.z>3){const [x,y]=screen(beacon);ctx.font='bold 17px Arial';ctx.textAlign='center';const textWidth=ctx.measureText(destination).width;ctx.fillStyle='#284b40ee';ctx.fillRect(x-textWidth/2-10,y-23,textWidth+20,30);ctx.fillStyle='#fff';ctx.fillText(destination,x,y-2);}
     }
     minimap();dialog.dataset.hops=String(hops);dialog.dataset.speed=Math.hypot(momentum.x,momentum.y).toFixed(2);dialog.dataset.grounded=String(grounded);dialog.dataset.sprinting=String(keys.has('shift'));dialog.dataset.mode=controlMode;dialog.dataset.yaw=yaw.toFixed(4);dialog.dataset.pitch=pitch.toFixed(4);dialog.dataset.camera=thirdPerson?'third':'first';
@@ -154,7 +156,7 @@
     if(!destination){hud.textContent='Choose a rack or product first.';return;}
     const path=WarehouseNavigation.find(data.layout,position,destination,(x,y)=>clear(x,y));
     if(!path.length){hud.textContent='No clear aisle route found. Try resetting position or exploring manually.';return;}
-    route=path.slice(1);momentum.x=momentum.y=0;thirdPerson=true;cameraMenu.value='third';controlMode='explore';if(phone())settings.open=false;canvas.focus({preventScroll:true});
+    route=path.slice(1);guidanceState='guiding';targetPitch=0;momentum.x=momentum.y=0;thirdPerson=true;cameraMenu.value='third';controlMode='explore';if(!route.length)arrive();if(phone())settings.open=false;canvas.focus({preventScroll:true});
   }
   const bodyHeight=44,bodyRadius=7;
   function overlaps(solid,x=position.x,y=position.y){return x>solid.x-bodyRadius&&x<solid.x+solid.width+bodyRadius&&y>solid.y-bodyRadius&&y<solid.y+solid.depth+bodyRadius;}
@@ -196,9 +198,9 @@
   function tick(time){if(!dialog.open)return;const dt=Math.min((time-last)/1000||0,.04);last=time;
     if(!document.hidden&&controlMode!=='popup'){if(route.length){
       let remaining=135*dt;
-      while(route.length&&remaining>0){const next=route[0],dx=next.x-position.x,dy=next.y-position.y,distance=Math.hypot(dx,dy);if(distance<.1){route.shift();continue;}const travel=Math.min(distance,remaining);move(dx/distance*travel,dy/distance*travel);remaining-=travel;if(Math.hypot(next.x-position.x,next.y-position.y)<.1)route.shift();else if(travel>=distance-.01){route=[];hud.textContent='Route blocked. Choose Auto-guide to recalculate.';break;}}
+      while(route.length&&remaining>0){const next=route[0],dx=next.x-position.x,dy=next.y-position.y,distance=Math.hypot(dx,dy);if(distance<.1){route.shift();continue;}const travel=Math.min(distance,remaining);move(dx/distance*travel,dy/distance*travel);remaining-=travel;if(Math.hypot(next.x-position.x,next.y-position.y)<.1)route.shift();else if(travel>=distance-.01){stopGuide();guidanceState='blocked';selection.textContent='Route blocked. Choose Auto-guide to recalculate.';break;}}
       if(route.length){let look={x:position.x,y:position.y},ahead=55;for(const point of route){const distance=Math.hypot(point.x-look.x,point.y-look.y);if(distance>=ahead){const fraction=ahead/distance;look={x:look.x+(point.x-look.x)*fraction,y:look.y+(point.y-look.y)*fraction};break;}ahead-=distance;look=point;}targetYaw=Math.atan2(look.x-position.x,look.y-position.y);}
-      else if(destination){const r=data.layout.regions.find(r=>r.code===destination);targetYaw=Math.atan2(r.x+r.width/2-position.x,r.y+r.depth/2-position.y);selection.textContent=`Arrived at ${destination}. Click a parcel to inspect its rack.`;}
+      else if(destination&&guidanceState==='guiding')arrive();
     }
       if(keys.has('arrowleft'))targetYaw+=dt*1.15;if(keys.has('arrowright'))targetYaw-=dt*1.15;
       if(keys.has('arrowup'))targetPitch=Math.min(1.15,targetPitch+dt);if(keys.has('arrowdown'))targetPitch=Math.max(-1.15,targetPitch-dt);
@@ -208,7 +210,7 @@
     frame=requestAnimationFrame(tick);
   }
   dialog.addEventListener('keydown',event=>{if(event.target.matches('input,select,button'))return;const key=event.key.toLowerCase();if(key==='q'){event.preventDefault();openQuickSearch();return;}if(key==='escape'){event.preventDefault();controlMode='cursor';releaseMouse();return;}if(['w','a','s','d','arrowleft','arrowright','arrowup','arrowdown',' ','shift'].includes(key)){event.preventDefault();if(controlMode!=='explore'&&!phone())return;stopGuide();keys.add(key);if(key===' '&&!event.repeat)jump();}});
-  window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();momentum.x=momentum.y=0;route=[];});
+  window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));window.addEventListener('blur',()=>{keys.clear();momentum.x=momentum.y=0;stopGuide();});
   function rackAt(x,y){if(depthRenderer)return depthRenderer.pick(x,y);for(let i=hits.length-1;i>=0;i--){const face=hits[i],path=new Path2D();face.points.forEach((p,index)=>index?path.lineTo(...p):path.moveTo(...p));path.closePath();if(ctx.isPointInPath(path,x,y))return face.rack;}return null;}
   function inspect(x,y){const rack=rackAt(x,y);if(rack)rackPopup(rack);}
   let lockingMouse=false;
@@ -250,7 +252,7 @@
   search.oninput=filterDirectory;
   function findAndGuide(){if(!menu.value&&menu.options.length>1)menu.selectedIndex=1;if(!menu.value){selection.textContent='No matching product or rack. Try another search.';return;}choose(menu.value);plan();}
   document.querySelector('#walk-find').onclick=findAndGuide;search.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();findAndGuide();}});
-  menu.onchange=()=>{if(menu.value){choose(menu.value);plan();}};document.querySelector('#walk-guide').onclick=plan;document.querySelector('#walk-stop').onclick=()=>{stopGuide();canvas.focus({preventScroll:true});};document.querySelector('#walk-home').onclick=reset;
+  menu.onchange=()=>{if(menu.value){choose(menu.value);plan();}};document.querySelector('#walk-guide').onclick=plan;document.querySelector('#walk-stop').onclick=finishGuide;document.querySelector('#walk-home').onclick=reset;
   for(const button of dialog.querySelectorAll('[data-walk-key]')){button.onpointerdown=e=>{e.preventDefault();button.setPointerCapture(e.pointerId);controlMode='explore';stopGuide();keys.add(button.dataset.walkKey);};for(const name of ['pointerup','pointercancel','lostpointercapture'])button.addEventListener(name,()=>keys.delete(button.dataset.walkKey));}
   document.querySelector('#walk-jump').onclick=()=>{canvas.focus({preventScroll:true});};
   document.querySelector('#walk-open').onclick=async()=>{const version=++generation;dialog.showModal();settings.open=!phone();hud.textContent='Loading warehouse…';try{const response=await fetch('/api/store-map');if(!response.ok)throw Error('Unable to load warehouse.');const loaded=await response.json();if(version!==generation||!dialog.open)return;data=loaded;options=[];search.value='';menu.replaceChildren(new Option('Choose a destination',''));for(const r of data.layout.regions){if([...menu.options].some(o=>o.value===r.code))continue;const names=data.products.filter(p=>p.locations.some(l=>code(l.area)===r.code)).map(p=>p.name);const uids=data.products.filter(p=>p.locations.some(l=>code(l.area)===r.code)).map(p=>p.uid);const label=r.label+(names.length?' — '+names.join(', '):'')+(uids.length?' · '+uids.join(', '):'');options.push({label,code:r.code});menu.append(new Option(label,r.code));}destination='';buildGeometry();reset();controlMode=phone()?'explore':'cursor';mouseStatus(false);hud.textContent='Choose a destination, or explore freely.';last=performance.now();frame=requestAnimationFrame(tick);}catch(e){hud.textContent=e.message;}};

@@ -4,6 +4,10 @@
   const search=document.querySelector('#map-search'),results=document.querySelector('#map-results'),message=document.querySelector('#map-message');
   const ns='http://www.w3.org/2000/svg';
   let mapRoute=[],routeRack='';
+  const routeDone=document.querySelector('#map-route-done');
+  function clearRoute(){mapRoute=[];routeRack='';render();}
+  routeDone.onclick=clearRoute;
+  svg.addEventListener('walk-route-done',clearRoute);
   let layout,products=[],selected='',angle=-.45,zoom=1,top=false,floorView='all',tilt=.56;
   const unitsPerBox=1000;
   const levelOf=code=>code==='G8'?2:1;
@@ -165,6 +169,7 @@
   }
   function render(){
     draw();results.replaceChildren();
+    routeDone.disabled=!mapRoute.length;
     const found=matches().filter(p=>floorView==='all'||p.locations.some(l=>String(levelOf(rackCode(l.area)))===floorView)),rows=selected?found.filter(p=>p.locations.some(l=>rackCode(l.area)===selected)):found;
     document.querySelector('#map-title').textContent=selected==='G8'?'G8 · Level 2 mezzanine':selected?`Location ${selected}`:search.value?'Search results':'Select a rack';
     document.querySelector('#map-summary').textContent=`${rows.length} products${selected?' in this location':''}. Quantities are shown per location.`;
