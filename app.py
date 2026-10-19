@@ -1,7 +1,7 @@
 """Public entry point for the isolated fictional inventory demo.
 
 Vercel's Flask preset discovers this root module automatically. The bootstrap
-uses only in-memory fictional data and deliberately disables live integrations.
+uses the configured demo database (or local in-memory preview) and disables Access.
 """
 
 from run_demo import module

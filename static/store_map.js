@@ -107,7 +107,7 @@
         }
       }
       const parcel=(x,y,w,d,z,height=14)=>{
-        const carton=node('g',{'class':'stock-parcel','aria-hidden':'true',style:'pointer-events:none;transform-box:fill-box;transform-origin:center'});
+        const carton=node('g',{'class':'stock-parcel','aria-hidden':'true',opacity:'.2',style:'pointer-events:none;transform-box:fill-box;transform-origin:center'});
         box(carton,x,y,w,d,z,height,['#aa8751','#c3a367','#e6d6a1']);
         line(carton,project(x+w*.5,y,z+height),project(x+w*.5,y+d,z+height),'#f7e8bb',2);g.append(carton);
       };

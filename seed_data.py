@@ -54,7 +54,9 @@ def seed(db):
             'stock_revision':0,'access_confirmed':state,'access_sync_eligible':True,'sync_status':'synced'})
         for code,multiplier in [('P',1),('S',2)]:
             db.pricing.insert_one({'part_id':uid,'pricecd':code,'S12':round((1.2+index*.25)*multiplier,4),
-                'S100':round((1+index*.25)*multiplier,4),'currency':'MYR'})
+                'S100':round((1+index*.25)*multiplier,4),
+                **{tier:round((base+index*.25)*multiplier,4) for tier,base in [('S500',.95),('1K',.9),('3K',.85),('5K',.8),('10K',.75)]},
+                'currency':'MYR'})
         db.inventory_settings.insert_one({'_id':'product:'+uid,'lead_time':7,'review_period':7,'minimum_order':50,
             'order_multiple':25,'confirmed_incoming':0,'committed_outgoing':0,'reorder_threshold':100})
         db.stock_movements.insert_one({'_id':'demo:count:'+uid,'event_id':'demo:count:'+uid,'uid':uid,'product_name':name,

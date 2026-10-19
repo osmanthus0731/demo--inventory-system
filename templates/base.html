@@ -347,7 +347,7 @@
 
   <!-- Page -->
   <main id="page" class="page">
-    {% if demo_mode %}<div class="demo-banner"><strong>Local demo · fictional data</strong><span>Resets on restart. No live connections.</span>{% if session.role=='admin' %}<button class="btn btn-secondary" id="demo-access" data-token="{{ platform_csrf }}">Simulate Access update</button>{% endif %}<span id="demo-message" role="status"></span></div><script src="{{ url_for('static',filename='demo.js') }}" defer></script>{% endif %}
+    {% if demo_mode %}<div class="demo-banner"><strong>Showcase · fictional data</strong><span>{{ 'Changes are saved in the shared demo database.' if demo_persistent else 'Local preview: changes reset on restart.' }} Access updates are simulated.</span>{% if session.role=='admin' %}<button class="btn btn-secondary" id="demo-access" data-token="{{ platform_csrf }}">Simulate Access update</button>{% endif %}<span id="demo-message" role="status"></span></div><script src="{{ url_for('static',filename='demo.js') }}" defer></script>{% endif %}
     <div class="wrap">
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
