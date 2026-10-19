@@ -1,6 +1,7 @@
 """Loopback-only, in-memory demonstration. No real database or Access connection."""
 import os
 from pathlib import Path
+import secrets
 import sys
 from threading import RLock
 from unittest.mock import patch
@@ -13,7 +14,7 @@ for key in list(os.environ):
     if key.startswith(('ACCESS_','MONGO_','SYNC_','BOOTSTRAP_','FALLBACK_')): os.environ.pop(key,None)
 os.environ.update(MONGO_URI='mongodb://localhost/mizitco_demo',MONGO_DB='mizitco_demo',BOOTSTRAP_USERS='0',
     FORCE_MONGO_ONLY='1',BASE_URL='',SYNC_ENABLED='0',ACCESS_WRITEBACK_ENABLED='0',INVENTORY_PLATFORM_ENABLED='1',
-    STOCK_WRITES_ENABLED='1',PLATFORM_CONFIG_WRITES='1',FLASK_SECRET='local-fictional-demonstration')
+    STOCK_WRITES_ENABLED='1',PLATFORM_CONFIG_WRITES='1',FLASK_SECRET=secrets.token_urlsafe(32))
 database=mongomock.MongoClient()
 with patch('dotenv.load_dotenv',return_value=False),patch('pymongo.MongoClient',return_value=database):
     import app as module

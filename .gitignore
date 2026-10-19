@@ -14,5 +14,6 @@ instance/
 htmlcov/
 .idea/
 .vscode/
+.vercel/
 Thumbs.db
 .DS_Store

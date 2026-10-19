@@ -1,0 +1,15 @@
+.git/
+.github/
+.vercel/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+.venv/
+venv/
+.pytest_cache/
+*.db
+*.sqlite
+*.sqlite3
+setup_demo.bat
+start_demo.bat
